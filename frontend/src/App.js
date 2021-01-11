@@ -1,6 +1,6 @@
 import logo from './logo.svg'
 import './App.css'
-import { Provider, connect } from 'react-redux'
+import { connect } from 'react-redux'
 
 function App({ count, handleIncrementClick, handleDecrementClick }) {
   return (
