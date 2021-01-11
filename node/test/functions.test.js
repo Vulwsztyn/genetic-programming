@@ -59,12 +59,15 @@ describe('functions', () => {
       expect(e2.lt($('7.3891'))).toBeTruthy()
     })
   })
-  describe('pow', () => {
+  describe('protectedPow', () => {
     it('should work for positive exponenet', () => {
-      expect(functions.pow(two, three)).toEqual($(8))
+      expect(functions.protectedPow(two, three)).toEqual($(8))
     })
     it('should work for negative exponenet', () => {
-      expect(functions.pow(two, minusFour)).toEqual($('0.0625'))
+      expect(functions.protectedPow(two, minusFour)).toEqual($('0.0625'))
+    })
+    it('should work for negative base', () => {
+      expect(functions.protectedPow($(-2), minusFour)).toEqual($('0.0625'))
     })
   })
   describe('protectedLog', () => {

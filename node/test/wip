@@ -1,0 +1,30 @@
+const specimen = {
+  name: 'multiply',
+  type: 'F',
+  children: [
+    {
+      name: 'add',
+      type: 'F',
+      children: [
+        {
+          type: 'T',
+          value: 1,
+        },
+        {
+          type: 'T',
+          value: 'x',
+        },
+      ],
+    },
+    {
+      name: 'neg',
+      type: 'F',
+      children: [
+        {
+          type: 'T',
+          value: 'y',
+        },
+      ],
+    },
+  ],
+}

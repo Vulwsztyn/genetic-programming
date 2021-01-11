@@ -27,20 +27,32 @@ function exp(a) {
   return a.exp()
 }
 
-function pow(a, b) {
-  return $(a).pow(b)
+function protectedPow(a, b) {
+  return !a.eq('0') ? $(a.abs()).pow(b) : $(0)
 }
 
 function protectedLog(a, b) {
-  return a.gt(0) && b.gt(0) && !a.eq($(1)) ? b.log(a) : $(0)
+  try {
+    return a.gt(0) && b.gt(0) && !a.eq($(1)) ? b.log(a) : $(0)
+  } catch (error) {
+    return b
+  }
 }
 
 function sin(a) {
-  return a.sin()
+  try {
+    return a.sin()
+  } catch (error) {
+    return a
+  }
 }
 
 function cos(a) {
-  return a.cos()
+  try {
+    return a.cos()
+  } catch (error) {
+    return a
+  }
 }
 
 function protectedSqrt(a) {
@@ -59,7 +71,7 @@ module.exports = {
   min,
   max,
   exp,
-  pow,
+  protectedPow,
   protectedLog,
   sin,
   cos,
