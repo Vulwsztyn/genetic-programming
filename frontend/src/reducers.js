@@ -1,3 +1,11 @@
+const points = [...Array(20).keys()].map((a) => {
+  const x = a / 10
+  return {
+    x: x.toFixed(2),
+    y: (x * x - x).toFixed(2),
+  }
+})
+
 const defaultState = {
   problemType: 'real',
   populationSize: 25000,
@@ -6,14 +14,17 @@ const defaultState = {
   tournamentSize: 500,
   tournamentWinningProbability: 0.5,
   crossoverProbability: 0.5,
+  pointsRaw: points.map(({ x, y }) => `${x}, ${y}`).join('\n'),
+  leavesRaw: ['1', '-1', '(-10,10)'].join('\n'),
 }
 
-const mainReducer = function (state = 0, action) {
+const mainReducer = function (state = defaultState, action) {
   switch (action.type) {
-    case 'INCREMENT':
-      return state + 1
-    case 'DECREMENT':
-      return state - 1
+    case 'INPUT_CHANGE':
+      return {
+        ...state,
+        [action.field]: action.value,
+      }
     default:
       return state
   }

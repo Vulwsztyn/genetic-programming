@@ -7,6 +7,8 @@ import FormLabel from '@material-ui/core/FormLabel'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
+import { connect } from 'react-redux'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiTextField-root': {
@@ -19,48 +21,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function FormPropsTextFields() {
-  const [value, setValue] = React.useState('real')
-
-  const handleChange = (event) => {
-    setValue(event.target.value)
-  }
+function Inputs({
+  problemType,
+  populationSize,
+  numberOfGenerations,
+  maxTreeDepth,
+  tournamentSize,
+  tournamentWinningProbability,
+  crossoverProbability,
+  pointsRaw,
+  leavesRaw,
+  setValue,
+}) {
   const classes = useStyles()
 
   const capitalise = (e) => e[0].toUpperCase() + e.slice(1)
-
-  const points = [...Array(20).keys()].map((a) => {
-    const x = a / 10
-    return {
-      x: x.toFixed(2),
-      y: (x * x - x).toFixed(2),
-    }
-  })
 
   return (
     <form className={classes.root} noValidate autoComplete='off'>
       <div>
         <FormControl component='fieldset'>
           <FormLabel component='legend'>Problem type</FormLabel>
-          <RadioGroup aria-label='gender' name='gender1' value={value} onChange={handleChange}>
+          <RadioGroup
+            aria-label='problem-type'
+            name='problem-type'
+            value={problemType}
+            onChange={(event) => setValue('problemType', event.target.value)}
+          >
             {['real', 'integer'].map((e) => (
               <FormControlLabel value={e} control={<Radio />} label={capitalise(e)} />
             ))}
           </RadioGroup>
         </FormControl>
         {[
-          { name: 'population-size', defaultValue: 25000 },
-          { name: 'number-of-generations', defaultValue: 50 },
-          { name: 'max-tree-depth', defaultValue: 6 },
-          { name: 'tournament-size', defaultValue: 500 },
-          { name: 'tournament-winning-probability', defaultValue: 0.5 },
-          { name: 'crossover-probabilty', defaultValue: 0.5 },
-        ].map(({ name, defaultValue }) => (
+          { name: 'population-size', value: populationSize, stateField: 'populationSize' },
+          { name: 'number-of-generations', value: numberOfGenerations, stateField: 'numberOfGenerations' },
+          { name: 'max-tree-depth', value: maxTreeDepth, stateField: 'maxTreeDepth' },
+          { name: 'tournament-size', value: tournamentSize, stateField: 'tournamentSize' },
+          {
+            name: 'tournament-winning-probability',
+            value: tournamentWinningProbability,
+            stateField: 'tournamentWinningProbability',
+          },
+          { name: 'crossover-probabilty', value: crossoverProbability, stateField: 'crossoverProbability' },
+        ].map(({ name, value, stateField }) => (
           <TextField
             id={name}
             label={name.split('-').map(capitalise).join(' ')}
             type='number'
-            defaultValue={defaultValue}
+            value={value}
+            onChange={(e) => setValue(stateField, e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
@@ -68,20 +78,22 @@ export default function FormPropsTextFields() {
           />
         ))}
         <TextField
-          id='outlined-multiline-static'
+          id='points'
           label='Points (last column is y)'
           multiline
           rows={10}
-          defaultValue={points.map(({ x, y }) => `${x}, ${y}`).join('\n')}
+          value={pointsRaw}
           variant='outlined'
+          onChange={(e) => setValue('pointsRaw', e.target.value)}
         />
         <TextField
-          id='outlined-multiline-static'
+          id='leaves'
           label='Possible leaves'
           multiline
           rows={10}
-          defaultValue={['1', '-1', '(-10,10)'].join('\n')}
+          value={leavesRaw}
           variant='outlined'
+          onChange={(e) => setValue('leavesRaw', e.target.value)}
         />
       </div>
       <div>
@@ -98,3 +110,36 @@ export default function FormPropsTextFields() {
     </form>
   )
 }
+
+const mapStateToProps = (state) => {
+  const {
+    problemType,
+    populationSize,
+    numberOfGenerations,
+    maxTreeDepth,
+    tournamentSize,
+    tournamentWinningProbability,
+    crossoverProbability,
+    pointsRaw,
+    leavesRaw,
+  } = state
+  return {
+    problemType,
+    populationSize,
+    numberOfGenerations,
+    maxTreeDepth,
+    tournamentSize,
+    tournamentWinningProbability,
+    crossoverProbability,
+    pointsRaw,
+    leavesRaw,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setValue: (field, value) => dispatch({ type: 'INPUT_CHANGE', value, field }),
+  }
+}
+const Container = connect(mapStateToProps, mapDispatchToProps)(Inputs)
+export default Container
