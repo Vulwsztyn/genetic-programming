@@ -1,4 +1,4 @@
-function specimenEvaluator(functions) {
+export function specimenEvaluator(functions) {
   function evaluator(variables, specimen) {
     function Tvalue(node) {
       return variables[node.value] ?? node.value
@@ -8,7 +8,4 @@ function specimenEvaluator(functions) {
       : Tvalue(specimen)
   }
   return evaluator
-}
-module.exports = {
-  specimenEvaluator,
 }

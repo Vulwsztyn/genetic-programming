@@ -48,8 +48,8 @@ export default addNameAndArity({
     toCode: (a, b) => `Math.pow(${a}, ${b})`,
   },
   log: {
-    function: (a, b) => Math.pow(a, b),
-    toCode: (a, b) => `Math.pow(${a}, ${b})`,
+    function: (a, b) => Math.log(b) / Math.log(a),
+    toCode: (a, b) => `Math.log(${b}) / Math.log(${a})`,
   },
   protectedLog: {
     function: protectedLog,
@@ -70,7 +70,7 @@ export default addNameAndArity({
   },
   protectedSqrt: {
     function: protectedSqrt,
-    toCode: (a, b) => `protectedSqrt(${a}, ${b})`,
+    toCode: (a) => `protectedSqrt(${a})`,
     codeAddition: `const protectedSqrt = ${protectedSqrt.toString()}`,
   },
   neg: {
@@ -78,4 +78,3 @@ export default addNameAndArity({
     toCode: (a) => `-${a}`,
   },
 })
-
