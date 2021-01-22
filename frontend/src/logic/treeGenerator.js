@@ -13,7 +13,7 @@ function countSubNodes(specimen) {
       : 0)
   return specimen
 }
-function generateTree(mode, functionsMetaArray, leaves, maxLevel, currentLevel = 1) {
+export function generateTree(mode, functionsMetaArray, leaves, maxLevel, currentLevel = 1) {
   function generate(currentLevel) {
     const choices =
       currentLevel === maxLevel
@@ -59,7 +59,7 @@ function getNode(specimen, numberOfNode, parent = null, childNumber = null) {
   return { node: parent, childNumber }
 }
 
-function mutate(specimen, mode, functionsMetaArray, leaves, maxLevel) {
+export function mutate(specimen, mode, functionsMetaArray, leaves, maxLevel) {
   const newSpecimen = structuredClone(specimen)
   const numberOfNodeToReplace = randomInt(newSpecimen.subNodesCount - 1)
   //   console.log('numberOfNodeToReplace', numberOfNodeToReplace)
@@ -71,7 +71,7 @@ function mutate(specimen, mode, functionsMetaArray, leaves, maxLevel) {
   return countSubNodes(specimen)
 }
 
-function crossover(specimen1, specimen2) {
+export function crossover(specimen1, specimen2) {
   const newSpecimen1 = structuredClone(specimen1)
   const newSpecimen2 = structuredClone(specimen2)
   const numberOfNodeToReplace1 = randomInt(newSpecimen1.subNodesCount - 1)
@@ -87,8 +87,8 @@ function crossover(specimen1, specimen2) {
   return [countSubNodes(newSpecimen1), countSubNodes(newSpecimen2)]
 }
 
-module.exports = {
-  generateTree,
-  mutate,
-  crossover,
-}
+// module.exports = {
+//   generateTree,
+//   mutate,
+//   crossover,
+// }
