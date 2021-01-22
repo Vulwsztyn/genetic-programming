@@ -23,7 +23,7 @@ const defaultState = {
   algorithmState: 'BEFORE_RUN',
 }
 
-const mainReducer = function (state = defaultState, action) {
+export const mainReducer = function (state = defaultState, action) {
   switch (action.type) {
     case 'INPUT_CHANGE':
       return state.algorithmState === 'RUNNING'
@@ -70,4 +70,4 @@ const mainReducer = function (state = defaultState, action) {
   }
 }
 
-module.exports = { mainReducer }
+

@@ -1,33 +1,31 @@
-// import * as R from 'ramda'
-
-function randomInt(range) {
+export function randomInt(range) {
   return Math.floor(Math.random() * range)
 }
 
-function trueWithProbabilty(probabilty) {
+export function trueWithProbabilty(probabilty) {
   return Math.random() < probabilty
 }
 
-function choose(choices) {
+export function choose(choices) {
   const index = randomInt(choices.length)
   return choices[index]
 }
 
-const structuredClone = (obj) => {
+export const structuredClone = (obj) => {
   return JSON.parse(JSON.stringify(obj))
 }
 
-function getRandom(min, max) {
+export function getRandom(min, max) {
   return Math.random() * (max - min) + min
 }
 
-function sample(arr, size) {
+export function sample(arr, size) {
   const indexes = [...Array(size).keys()].map(() => randomInt(arr.length))
   indexes.sort()
   return indexes.map((i) => arr[i])
 }
 
-function stringifyTleaf(specimen) {
+export function stringifyTleaf(specimen) {
   return specimen.value.length
     ? specimen.value
     : Number.isInteger(specimen.value)
@@ -35,13 +33,13 @@ function stringifyTleaf(specimen) {
     : specimen.value.toFixed(5)
 }
 
-function stringifySpecimen(specimen) {
+export function stringifySpecimen(specimen) {
   return specimen.type === 'T'
     ? `${stringifyTleaf(specimen)}`
     : `${specimen.name}(${specimen.children ? specimen.children.map(stringifySpecimen).join(',') : ''})`
 }
 
-function tournament(specimenArray, tourmanentWinningProbability) {
+export function tournament(specimenArray, tourmanentWinningProbability) {
   for (const specimen of specimenArray) {
     if (trueWithProbabilty(tourmanentWinningProbability)) {
       return specimen
@@ -50,7 +48,7 @@ function tournament(specimenArray, tourmanentWinningProbability) {
   return specimenArray[specimenArray.length - 1]
 }
 
-function specimenToCode(specimen, functions) {
+export function specimenToCode(specimen, functions) {
   function codify(specimen) {
     const childrenMapped = specimen.children ? specimen.children.map(codify) : null
     return specimen.type === 'T'
@@ -66,25 +64,29 @@ function specimenToCode(specimen, functions) {
   const codified = codify(specimen)
   console.log(Object.keys(codified.functionsUsed))
   console.log(Object.keys(codified.functionsUsed).filter((e) => functions[e].codeAddition))
-  console.log(Object.keys(codified.functionsUsed).filter((e) => functions[e].codeAddition).map((e) => functions[e].codeAddition))
+  console.log(
+    Object.keys(codified.functionsUsed)
+      .filter((e) => functions[e].codeAddition)
+      .map((e) => functions[e].codeAddition),
+  )
   return `const myFunction() => ${codified.code}\n${Object.keys(codified.functionsUsed)
     .filter((e) => functions[e].codeAddition)
     .map((e) => functions[e].codeAddition)
     .join('\n')}`
 }
 
-function mapSpecimenToStorable(e, functions) {
+export function mapSpecimenToStorable(e, functions) {
   return { function: stringifySpecimen(e), fitness: e.fitness.toFixed(5), code: specimenToCode(e, functions) }
 }
 
-module.exports = {
-  getRandom,
-  randomInt,
-  trueWithProbabilty,
-  choose,
-  structuredClone,
-  sample,
-  stringifySpecimen,
-  tournament,
-  mapSpecimenToStorable,
-}
+// module.exports = {
+//   getRandom,
+//   randomInt,
+//   trueWithProbabilty,
+//   choose,
+//   structuredClone,
+//   sample,
+//   stringifySpecimen,
+//   tournament,
+//   mapSpecimenToStorable,
+// }
