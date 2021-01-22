@@ -8,7 +8,8 @@ import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
-
+import Checkbox from '@material-ui/core/Checkbox'
+// import * as R from 'ramda'
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiTextField-root': {
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Inputs({
+  algorithm,
   problemType,
   populationSize,
   numberOfGenerations,
@@ -32,10 +34,37 @@ function Inputs({
   pointsRaw,
   leavesRaw,
   setValue,
+  functions,
+  setFunction,
+  algorithmState,
 }) {
   const classes = useStyles()
 
   const capitalise = (e) => e[0].toUpperCase() + e.slice(1)
+
+  // const runButtonFunction = () => {
+  //   algorithm.startAndCreateFirstGeneration()
+
+  //   for (let i = 0; i < algorithm.numberOfGenerations - 1; i++) {
+  //     console.log('Generacja', i)
+  //     await algorithm.createNextGeneration()
+  //   }
+  // }
+
+  const createGenerationZeroButtonFunction = () => {
+    algorithm.startAndCreateFirstGeneration()
+  }
+
+  const createNextGenerationButtonFunction = () => {
+    algorithm.createNextGeneration()
+  }
+
+  const runButtonFunction = async () => {
+    let finished = false
+    while (!finished) {
+      finished = await algorithm.runIfNotFinished()
+    }
+  }
 
   return (
     <form className={classes.root} noValidate autoComplete='off'>
@@ -49,7 +78,12 @@ function Inputs({
             onChange={(event) => setValue('problemType', event.target.value)}
           >
             {['real', 'integer'].map((e) => (
-              <FormControlLabel value={e} control={<Radio />} label={capitalise(e)} />
+              <FormControlLabel
+                key={e}
+                value={e}
+                control={<Radio disabled={algorithmState !== 'BEFORE_RUN'} />}
+                label={capitalise(e)}
+              />
             ))}
           </RadioGroup>
         </FormControl>
@@ -67,14 +101,16 @@ function Inputs({
         ].map(({ name, value, stateField }) => (
           <TextField
             id={name}
+            key={name}
             label={name.split('-').map(capitalise).join(' ')}
             type='number'
             value={value}
-            onChange={(e) => setValue(stateField, e.target.value)}
+            onChange={(e) => setValue(stateField, Number(e.target.value))}
             InputLabelProps={{
               shrink: true,
             }}
             variant='outlined'
+            disabled={algorithmState !== 'BEFORE_RUN'}
           />
         ))}
         <TextField
@@ -85,6 +121,7 @@ function Inputs({
           value={pointsRaw}
           variant='outlined'
           onChange={(e) => setValue('pointsRaw', e.target.value)}
+          disabled={algorithmState !== 'BEFORE_RUN'}
         />
         <TextField
           id='leaves'
@@ -94,10 +131,41 @@ function Inputs({
           value={leavesRaw}
           variant='outlined'
           onChange={(e) => setValue('leavesRaw', e.target.value)}
+          disabled={algorithmState !== 'BEFORE_RUN'}
         />
+        <FormControl component='fieldset'>
+          {Object.keys(functions).map((key) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={functions[key]}
+                  name={key}
+                  key={key}
+                  onChange={(event) => {
+                    setFunction(event)
+                  }}
+                  disabled={algorithmState !== 'BEFORE_RUN'}
+                />
+              }
+              label={key}
+            />
+          ))}
+        </FormControl>
       </div>
+
       <div>
-        <Button variant='contained' color='primary'>
+        <Button variant='contained' color='primary' onClick={createGenerationZeroButtonFunction}>
+          Create first generation
+        </Button>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={createNextGenerationButtonFunction}
+          disabled={algorithmState === 'BEFORE_RUN'}
+        >
+          Create Next Generation
+        </Button>
+        <Button variant='contained' color='primary' onClick={runButtonFunction}>
           Run
         </Button>
         {/* <Button variant='contained' color='primary'>
@@ -122,6 +190,8 @@ const mapStateToProps = (state) => {
     crossoverProbability,
     pointsRaw,
     leavesRaw,
+    functions,
+    algorithmState,
   } = state
   return {
     problemType,
@@ -133,12 +203,15 @@ const mapStateToProps = (state) => {
     crossoverProbability,
     pointsRaw,
     leavesRaw,
+    functions,
+    algorithmState,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setValue: (field, value) => dispatch({ type: 'INPUT_CHANGE', value, field }),
+    setFunction: (event) => dispatch({ type: 'SET_FUNCTION', name: event.target.name, value: event.target.checked }),
   }
 }
 const Container = connect(mapStateToProps, mapDispatchToProps)(Inputs)
