@@ -8,8 +8,10 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import { connect } from 'react-redux'
-import Highlight from 'react-highlight.js'
+// import Highlight from 'react-highlight.js'
 import Button from '@material-ui/core/Button'
+import { Typography } from '@material-ui/core'
+import SyntaxHighlighter from 'react-syntax-highlighter'
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -24,7 +26,9 @@ function Visuals({ generation, bestSpecimens, bestSpecimen }) {
       <TableCell component='th' scope='row' align='right'>
         {title || i + 1}
       </TableCell>
-      <TableCell align='right'>{row.function}</TableCell>
+      <TableCell align='right'>
+        <Typography>{row.function}</Typography>
+      </TableCell>
       <TableCell align='right'>{row.fitness}</TableCell>
       <TableCell align='right'>
         <Button variant='contained' color='primary' onClick={() => setCode(row.code)}>
@@ -39,7 +43,13 @@ function Visuals({ generation, bestSpecimens, bestSpecimen }) {
       {code || bestSpecimen?.code ? (
         <>
           <h2>Code:</h2>
-          <Highlight language='javascript'>{code || bestSpecimen?.code}</Highlight>
+          <SyntaxHighlighter
+            language='javascript'
+            lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+            wrapLines={true}
+          >
+            {code || bestSpecimen?.code}
+          </SyntaxHighlighter>
         </>
       ) : (
         <></>

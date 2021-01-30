@@ -2,6 +2,10 @@ export function randomInt(range) {
   return Math.floor(Math.random() * range)
 }
 
+export function randomIntInRange(min, max) {
+  return randomInt(max - min) + min
+}
+
 export function trueWithProbabilty(probabilty) {
   return Math.random() < probabilty
 }
@@ -30,13 +34,21 @@ export function stringifyTleaf(specimen) {
     ? specimen.value
     : Number.isInteger(specimen.value)
     ? specimen.value
+    : typeof specimen.value === 'boolean'
+    ? specimen.value
     : specimen.value.toFixed(5)
 }
 
 export function stringifySpecimen(specimen) {
   return specimen.type === 'T'
     ? `${stringifyTleaf(specimen)}`
-    : `${specimen.name}(${specimen.children ? specimen.children.map(stringifySpecimen).join(',') : ''})`
+    : `${specimen.name}(${specimen.children ? specimen.children.map(stringifySpecimen).join(', ') : ''})`
+}
+
+export function chooseOne(array, tournamentSize) {
+  const indexNormalised = Math.min(...[...Array(tournamentSize).keys()].map(() => Math.random()))
+  // console.log({indexNormalised})
+  return array[Math.floor(indexNormalised * array.length)]
 }
 
 export function tournament(specimenArray, tourmanentWinningProbability) {
@@ -48,7 +60,7 @@ export function tournament(specimenArray, tourmanentWinningProbability) {
   return specimenArray[specimenArray.length - 1]
 }
 
-export function specimenToCode(specimen, functions) {
+export function specimenToCode(specimen, functions, inputVariables) {
   function codify(specimen) {
     const childrenMapped = specimen.children ? specimen.children.map(codify) : null
     return specimen.type === 'T'
@@ -62,21 +74,25 @@ export function specimenToCode(specimen, functions) {
         }
   }
   const codified = codify(specimen)
-  console.log(Object.keys(codified.functionsUsed))
-  console.log(Object.keys(codified.functionsUsed).filter((e) => functions[e].codeAddition))
-  console.log(
-    Object.keys(codified.functionsUsed)
-      .filter((e) => functions[e].codeAddition)
-      .map((e) => functions[e].codeAddition),
-  )
-  return `const myFunction() => ${codified.code}\n${Object.keys(codified.functionsUsed)
+  // console.log(Object.keys(codified.functionsUsed))
+  // console.log(Object.keys(codified.functionsUsed).filter((e) => functions[e].codeAddition))
+  // console.log(
+  //   Object.keys(codified.functionsUsed)
+  //     .filter((e) => functions[e].codeAddition)
+  //     .map((e) => functions[e].codeAddition),
+  // )
+  return `const myFunction = (${inputVariables}) => ${codified.code}\n${Object.keys(codified.functionsUsed)
     .filter((e) => functions[e].codeAddition)
     .map((e) => functions[e].codeAddition)
     .join('\n')}`
 }
 
-export function mapSpecimenToStorable(e, functions) {
-  return { function: stringifySpecimen(e), fitness: e.fitness.toFixed(5), code: specimenToCode(e, functions) }
+export function mapSpecimenToStorable(e, functions, inputVariables) {
+  return {
+    function: stringifySpecimen(e),
+    fitness: e.fitness.toFixed(5),
+    code: specimenToCode(e, functions, inputVariables),
+  }
 }
 
 // module.exports = {

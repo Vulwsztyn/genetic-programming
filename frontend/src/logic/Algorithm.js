@@ -1,11 +1,13 @@
 import {
   getRandom,
   mapSpecimenToStorable,
-  stringifySpecimen,
+  // stringifySpecimen,
   trueWithProbabilty,
-  sample,
-  tournament,
+  // sample,
+  // tournament,
   structuredClone,
+  chooseOne,
+  randomIntInRange,
 } from './util'
 import functions from './functions'
 import * as R from 'ramda'
@@ -15,15 +17,16 @@ const { assignFitness } = require('./fitness')
 
 export default class Algorithm {
   constructor() {
-    this.inputs = {}
+    this.problemType = 'real'
     this.running = false
     this.mode = 'Fullnt'
     this.reduxSetters = {}
     this.functions = functions
-    this.functionsArray = Object.values(functions)
-    this.userSelectedFunctions = R.mergeAll(Object.keys(this.functions).map((e) => ({ [e]: true })))
+    this.inputVariables = []
+    this.calculateUsableFuncitons()
     this.evaluate = specimenEvaluator(functions)
     this.currentGenerationNumber = 0
+    console.log({ functions })
     this.sortingFunction = (a, b) =>
       isNaN(a.fitness)
         ? 1
@@ -40,58 +43,97 @@ export default class Algorithm {
         : 0
   }
 
+  calculateUsableFuncitons() {
+    console.log(this.problemType)
+    this.functionsArray = Object.values(functions).filter(({ onlyFor }) => onlyFor.includes(this.problemType))
+    this.userSelectedFunctions = R.mergeAll(
+      Object.keys(this.functions)
+        .filter((e) => this.functions[e].onlyFor.includes(this.problemType))
+        .map((e) => ({ [e]: true })),
+    )
+    console.log('test:', this.userSelectedFunctions)
+    console.log(
+      R.mergeAll(
+        Object.keys(this.functions)
+          .filter((e) => this.functions[e].onlyFor.includes(this.problemType))
+          .map((e) => ({ [e]: true })),
+      ),
+    )
+  }
+
   getUserSelectedFunctions() {
+    console.log(this.userSelectedFunctions)
     return this.userSelectedFunctions
   }
 
   setUserSelectedFunctions(functions) {
-    this.userSelectedFunctions = functions
-    this.functionsArray = Object.values(this.functions).filter((x) => functions[x.name])
+    this.userSelectedFunctions = R.mergeAll(
+      Object.keys(this.userSelectedFunctions).map((e) => ({ [e]: !!functions[e] })),
+    )
+    this.functionsArray = Object.values(this.functions).filter(
+      (x) => !!functions[x.name] && x.onlyFor.includes(this.problemType),
+    )
   }
 
   setReduxSetters(setters) {
     this.reduxSetters = { ...this.reduxSetters, ...setters }
   }
+
   setProperty(name, value) {
     this[name] = value
+    if (name === 'problemType') {
+      this.calculateUsableFuncitons()
+    }
   }
 
   parsePoints() {
+    const parseSinglePoint = {
+      real: (e) => Number(e),
+      integer: (e) => Math.round(Number(e)),
+      boolean: (e) => {
+        console.log(e, e === 'true')
+        return e.trim().toLowerCase() === 'true'
+      },
+    }[this.problemType]
     this.points = this.pointsRaw.split('\n').map((line) => {
-      const vars = line.split(',').map((e) => Number(e))
+      const vars = line.split(',').map((e) => parseSinglePoint(e))
       const xs = vars.slice(0, -1)
       const y = vars.slice(-1)[0]
-
       return {
         ...xs.reduce((acc, x) => ({ value: { ...acc.value, [`x${acc.i}`]: x }, i: acc.i + 1 }), { value: {}, i: 0 })
           .value,
         y,
       }
     })
+    console.log({ points: this.points })
   }
 
   parseLeaves() {
     const isRange = (e) => e.startsWith('(') && e.endsWith(')')
-    const fromInput = this.leavesRaw.split('\n').map((line) => {
-      if (isRange(line)) {
-        const [min, max] = line
-          .slice(1, -1)
-          .split(',')
-          .map((e) => Number(e))
-        return () => getRandom(min, max)
-      } else {
-        return () => Number(line)
-      }
+    const fromInput =
+      this.problemType !== 'boolean'
+        ? this.leavesRaw.split('\n').map((line) => {
+            if (isRange(line)) {
+              const [min, max] = line
+                .slice(1, -1)
+                .split(',')
+                .map((e) => Number(e))
+              return this.problemType === 'real' ? () => getRandom(min, max) : () => randomIntInRange(min, max)
+            } else {
+              return () => Number(line)
+            }
+          })
+        : [true, false].map((e) => () => e)
+    this.inputVariables = Object.keys(this.points[0]).filter((e) => e !== 'y')
+    const fromPoints = this.inputVariables.map((e) => {
+      return () => e
     })
-    const fromPoints = Object.keys(this.points[0])
-      .filter((e) => e !== 'y')
-      .map((e) => {
-        return () => e
-      })
+
     this.leavesFunctions = [...fromInput, ...fromPoints]
   }
 
   createGenerationZero() {
+    // console.log(this.inputs)
     const generation = [...Array(this.populationSize).keys()].map(() =>
       generateTree('', this.functionsArray, this.leavesFunctions, this.maxTreeDepth),
     )
@@ -109,18 +151,18 @@ export default class Algorithm {
     let i = 0
     while (i < newGeneration.length) {
       if (i < newGeneration.length - 1 && trueWithProbabilty(this.crossoverProbability)) {
-        const specimenArray1 = sample(this.generation, this.tournamentSize)
-        const specimenArray2 = sample(this.generation, this.tournamentSize)
-        const chosen1 = tournament(specimenArray1, this.tourmanentWinningProbability)
-        const chosen2 = tournament(specimenArray2, this.tourmanentWinningProbability)
+        const chosen1 = chooseOne(this.generation, this.tournamentSize)
+        // console.log({chosen1})
+        // console.log(stringifySpecimen(chosen1))
+        const chosen2 = chooseOne(this.generation, this.tournamentSize)
         const [a, b] = crossover(chosen1, chosen2)
         newGeneration[i] = a
         i++
         newGeneration[i] = b
         i++
       } else {
-        const specimenArray = sample(this.generation, this.tournamentSize)
-        const chosen = tournament(specimenArray, this.tourmanentWinningProbability)
+        const chosen = chooseOne(this.generation, this.tournamentSize)
+        // console.log(stringifySpecimen(chosen))
         newGeneration[i] = mutate(chosen, this.mode, this.functionsArray, this.leavesFunctions, this.maxTreeDepth)
         i++
       }
@@ -137,7 +179,7 @@ export default class Algorithm {
 
   setBestSpecimensRedux() {
     this.reduxSetters.setBestSpecimens(
-      this.generation.slice(0, 10).map((e) => mapSpecimenToStorable(e, this.functions)),
+      this.generation.slice(0, 10).map((e) => mapSpecimenToStorable(e, this.functions, this.inputVariables)),
     )
   }
 
@@ -149,11 +191,13 @@ export default class Algorithm {
     this.reduxSetters.setCurrentGeneration(this.currentGenerationNumber)
     this.createGenerationZero()
     this.bestSpecimen = structuredClone(this.generation[0])
-    this.reduxSetters.setBestSpecimen(mapSpecimenToStorable(this.bestSpecimen, this.functions))
+    this.reduxSetters.setBestSpecimen(mapSpecimenToStorable(this.bestSpecimen, this.functions, this.inputVariables))
     this.setBestSpecimensRedux()
   }
 
   async createNextGeneration() {
+    this.parsePoints()
+    this.parseLeaves()
     this.currentGenerationNumber++
     this.reduxSetters.setCurrentGeneration(this.currentGenerationNumber)
     await this.generateNextGeneration()
@@ -162,15 +206,18 @@ export default class Algorithm {
     this.setBestSpecimensRedux()
 
     const bestSpecimenThisGeneration = this.generation[0]
-    if (this.sortingFunction(this.bestSpecimen, bestSpecimenThisGeneration) === 1) {
+    const isCurrentBestBetterThanGlobalbest = this.sortingFunction(this.bestSpecimen, bestSpecimenThisGeneration) === 1
+    if (isCurrentBestBetterThanGlobalbest) {
       this.bestSpecimen = structuredClone(bestSpecimenThisGeneration)
-      this.reduxSetters.setBestSpecimen(mapSpecimenToStorable(this.bestSpecimen, this.functions))
+      this.reduxSetters.setBestSpecimen(mapSpecimenToStorable(this.bestSpecimen, this.functions, this.inputVariables))
     }
 
-    console.log(stringifySpecimen(this.bestSpecimen), this.bestSpecimen.fitness)
-    if (this.currentGenerationNumber >= this.numberOfGenerations) this.reduxSetters.setAlgorithmState('FINISHED')
+    // console.log(stringifySpecimen(this.bestSpecimen), this.bestSpecimen.fitness)
+    // if (this.currentGenerationNumber >= this.numberOfGenerations) this.reduxSetters.setAlgorithmState('FINISHED')
   }
   async runIfNotFinished() {
+    this.parsePoints()
+    this.parseLeaves()
     if (this.currentGenerationNumber >= this.numberOfGenerations) return true
     if (this.currentGenerationNumber === 0) {
       this.startAndCreateFirstGeneration()

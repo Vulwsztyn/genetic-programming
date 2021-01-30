@@ -9,17 +9,18 @@ const points = [...Array(20).keys()].map((a) => {
 const defaultState = {
   problemType: 'real',
   populationSize: 25000,
-  numberOfGenerations: 2,
+  desiredGeneration: 0,
+  // numberOfGenerations: 2,
   maxTreeDepth: 6,
   tournamentSize: 50,
-  tournamentWinningProbability: 0.5,
+  // tournamentWinningProbability: 0.5,
   crossoverProbability: 0.5,
   pointsRaw: points.map(({ x, y }) => `${x}, ${y}`).join('\n'),
   leavesRaw: ['1', '-1', '(-10,10)'].join('\n'),
   functions: {},
   bestSpecimens: [],
   bestSpecimen: null,
-  currentGeneration: '',
+  currentGeneration: '0',
   algorithmState: 'BEFORE_RUN',
 }
 
@@ -49,6 +50,7 @@ export const mainReducer = function (state = defaultState, action) {
       return {
         ...state,
         algorithmState: action.value,
+        desiredGeneration: action.value === 'BEFORE_RUN' ? 0 : state.desiredGeneration,
       }
     case 'SET_CURRENT_GENERATION':
       return {
@@ -65,9 +67,12 @@ export const mainReducer = function (state = defaultState, action) {
         ...state,
         bestSpecimen: action.value,
       }
+    case 'SET_DESIRED_GENERAION':
+      return {
+        ...state,
+        desiredGeneration: action.value,
+      }
     default:
       return state
   }
 }
-
-

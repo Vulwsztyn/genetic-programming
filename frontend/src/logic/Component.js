@@ -20,7 +20,6 @@ function App({
   setBestSpecimens,
   setBestSpecimen,
 }) {
-  algorithm.setProperty('problemType', problemType)
   algorithm.setProperty('populationSize', Number(populationSize))
   algorithm.setProperty('numberOfGenerations', Number(numberOfGenerations))
   algorithm.setProperty('maxTreeDepth', Number(maxTreeDepth))
@@ -34,6 +33,13 @@ function App({
   } else {
     setFunctions(algorithm.getUserSelectedFunctions())
   }
+  console.log(problemType, algorithm.problemType)
+  console.log(problemType !== algorithm.problemType)
+  if (problemType !== algorithm.problemType) {
+    algorithm.setProperty('problemType', problemType)
+    setFunctions(algorithm.getUserSelectedFunctions())
+  }
+
   algorithm.setReduxSetters({ setAlgorithmState, setCurrentGeneration, setBestSpecimens, setBestSpecimen })
   return <></>
 }
