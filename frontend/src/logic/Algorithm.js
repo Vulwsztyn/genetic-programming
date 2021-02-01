@@ -90,10 +90,7 @@ export default class Algorithm {
     const parseSinglePoint = {
       real: (e) => Number(e),
       integer: (e) => Math.round(Number(e)),
-      boolean: (e) => {
-        console.log(e, e === 'true')
-        return e.trim().toLowerCase() === 'true'
-      },
+      boolean: (e) => ['true', '1'].includes(e.trim().toLowerCase())
     }[this.problemType]
     this.points = this.pointsRaw.split('\n').map((line) => {
       const vars = line.split(',').map((e) => parseSinglePoint(e))
