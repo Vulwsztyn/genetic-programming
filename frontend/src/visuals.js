@@ -14,7 +14,7 @@ import { Typography } from '@material-ui/core'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 const useStyles = makeStyles({
   table: {
-    minWidth: 650,
+    // minWidth: 650,
   },
 })
 

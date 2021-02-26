@@ -9,15 +9,19 @@ import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import Checkbox from '@material-ui/core/Checkbox'
+import Grid from '@material-ui/core/Grid'
 // import * as R from 'ramda'
 const useStyles = makeStyles((theme) => ({
   root: {
+    flexGrow: 1,
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
       width: '25ch',
     },
-    '& > div > *': {
-      margin: theme.spacing(1),
+    button: {
+      padding: theme.spacing(3),
+      // textAlign: 'center',
+      // color: theme.palette.text.secondary,
     },
   },
 }))
@@ -77,25 +81,7 @@ function Inputs({
 
   return (
     <form className={classes.root} noValidate autoComplete='off'>
-      <div>
-        <FormControl component='fieldset'>
-          <FormLabel component='legend'>Problem type</FormLabel>
-          <RadioGroup
-            aria-label='problem-type'
-            name='problem-type'
-            value={problemType}
-            onChange={(event) => setValue('problemType', event.target.value)}
-          >
-            {['real', 'integer', 'boolean'].map((e) => (
-              <FormControlLabel
-                key={e}
-                value={e}
-                control={<Radio disabled={algorithmState !== 'BEFORE_RUN'} />}
-                label={capitalise(e)}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl>
+      <Grid container spacing={1}>
         {[
           { name: 'population-size', value: populationSize, stateField: 'populationSize' },
           // { name: 'number-of-generations', value: numberOfGenerations, stateField: 'numberOfGenerations' },
@@ -108,99 +94,144 @@ function Inputs({
           // },
           { name: 'crossover-probabilty', value: crossoverProbability, stateField: 'crossoverProbability' },
         ].map(({ name, value, stateField }) => (
+          <Grid item xs={12} sm={6} md={3} lg={2}>
+            <TextField
+              id={name}
+              key={name}
+              label={name.split('-').map(capitalise).join(' ')}
+              type='number'
+              value={value}
+              onChange={(e) => setValue(stateField, Number(e.target.value))}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant='outlined'
+              disabled={algorithmState !== 'BEFORE_RUN'}
+            />
+          </Grid>
+        ))}
+        <Grid item xs={12} sm={6} md={3} lg={2}>
           <TextField
-            id={name}
-            key={name}
-            label={name.split('-').map(capitalise).join(' ')}
+            id='points'
+            label='Points (last column is y)'
+            multiline
+            rows={10}
+            value={pointsRaw}
+            variant='outlined'
+            onChange={(e) => setValue('pointsRaw', e.target.value)}
+            // disabled={algorithmState !== 'BEFORE_RUN'}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3} lg={2}>
+          <TextField
+            id='leaves'
+            label='Possible leaves'
+            multiline
+            rows={10}
+            value={problemType === 'boolean' ? 'true, false' : leavesRaw}
+            variant='outlined'
+            onChange={(e) => setValue('leavesRaw', e.target.value)}
+            disabled={problemType === 'boolean'}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={1}>
+        <Grid item xs={12} sm={6}>
+          <FormControl component='fieldset'>
+            <FormLabel component='legend'>Problem type</FormLabel>
+            <RadioGroup
+              aria-label='problem-type'
+              name='problem-type'
+              value={problemType}
+              onChange={(event) => setValue('problemType', event.target.value)}
+            >
+              {['real', 'integer', 'boolean'].map((e) => (
+                <FormControlLabel
+                  key={e}
+                  value={e}
+                  control={<Radio disabled={algorithmState !== 'BEFORE_RUN'} />}
+                  label={capitalise(e)}
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl component='fieldset'>
+            {Object.keys(functions).map((key) => (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={functions[key]}
+                    name={key}
+                    key={key}
+                    onChange={(event) => {
+                      setFunction(event)
+                    }}
+                    disabled={algorithmState !== 'BEFORE_RUN'}
+                  />
+                }
+                label={key}
+              />
+            ))}
+          </FormControl>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Button
+            className={classes.button}
+            variant='contained'
+            color='primary'
+            onClick={createGenerationZeroButtonFunction}
+          >
+            Create first generation
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Button
+            className={classes.button}
+            variant='contained'
+            color='primary'
+            onClick={createNextGenerationButtonFunction}
+            // disabled={algorithmState === 'BEFORE_RUN'}
+          >
+            Create Next Generation
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Button className={classes.button} variant='contained' color='primary' onClick={runButtonFunction}>
+            Run N Generations
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3} lg={2}>
+          <TextField
+            // id={name}
+            // key={name}
+            // label={name.split('-').map(capitalise).join(' ')}
+            label='Number of generations to run'
             type='number'
-            value={value}
-            onChange={(e) => setValue(stateField, Number(e.target.value))}
+            value={numberOfgeneraionsToRun}
+            onChange={(e) => setNumberOfgeneraionsToRun(e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
             variant='outlined'
-            disabled={algorithmState !== 'BEFORE_RUN'}
+            // disabled={algorithmState !== 'BEFORE_RUN'}
           />
-        ))}
-        <TextField
-          id='points'
-          label='Points (last column is y)'
-          multiline
-          rows={10}
-          value={pointsRaw}
-          variant='outlined'
-          onChange={(e) => setValue('pointsRaw', e.target.value)}
-          // disabled={algorithmState !== 'BEFORE_RUN'}
-        />
-        <TextField
-          id='leaves'
-          label='Possible leaves'
-          multiline
-          rows={10}
-          value={problemType === 'boolean' ? 'true, false' : leavesRaw}
-          variant='outlined'
-          onChange={(e) => setValue('leavesRaw', e.target.value)}
-          disabled={problemType === 'boolean'}
-        />
-        <FormControl component='fieldset'>
-          {Object.keys(functions).map((key) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={functions[key]}
-                  name={key}
-                  key={key}
-                  onChange={(event) => {
-                    setFunction(event)
-                  }}
-                  disabled={algorithmState !== 'BEFORE_RUN'}
-                />
-              }
-              label={key}
-            />
-          ))}
-        </FormControl>
-      </div>
-
-      <div>
-        <Button variant='contained' color='primary' onClick={createGenerationZeroButtonFunction}>
-          Create first generation
-        </Button>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={createNextGenerationButtonFunction}
-          // disabled={algorithmState === 'BEFORE_RUN'}
-        >
-          Create Next Generation
-        </Button>
-        <Button variant='contained' color='primary' onClick={runButtonFunction}>
-          Run N Generations
-        </Button>
-        <TextField
-          // id={name}
-          // key={name}
-          // label={name.split('-').map(capitalise).join(' ')}
-          label='Number of generations to run'
-          type='number'
-          value={numberOfgeneraionsToRun}
-          onChange={(e) => setNumberOfgeneraionsToRun(e.target.value)}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          variant='outlined'
-          // disabled={algorithmState !== 'BEFORE_RUN'}
-        />
-        <Button variant='contained' color='primary' onClick={resetAlgorithmState}>
-          Reset
-        </Button>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Button className={classes.button} variant='contained' color='primary' onClick={resetAlgorithmState}>
+            Reset
+          </Button>
+        </Grid>
         {/* <Button variant='contained' color='primary'>
           Primary
         </Button>
         <Button variant='contained' color='primary'>
           Primary
         </Button> */}
-      </div>
+      </Grid>
     </form>
   )
 }
