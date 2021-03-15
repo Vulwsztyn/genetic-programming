@@ -138,4 +138,34 @@ export default addNameAndArity({
     toCode: (a) => `!(${a})`,
     onlyFor: ['boolean'],
   },
+  equalsNumeric: {
+    function: (a, b) => a === b ? 1 : 0,
+    toCode: (a, b) => `(${a} === ${b} ? 1 : 0)`,
+    onlyFor: ['integer', 'real'],
+  },
+  gtNumeric: {
+    function: (a, b) => a > b ? 1 : 0,
+    toCode: (a, b) => `(${a} > ${b} ? 1 : 0)`,
+    onlyFor: ['integer', 'real'],
+  },
+  ltNumeric: {
+    function: (a, b) => a > b ? 1 : 0,
+    toCode: (a, b) => `(${a} > ${b} ? 1 : 0)`,
+    onlyFor: ['integer', 'real'],
+  },
+  equals: {
+    function: (a, b) => a === b ? true : false,
+    toCode: (a, b) => `(${a} === ${b} ? true : false)`,
+    onlyFor: ['boolean'],
+  },
+  gt: {
+    function: (a, b) => a > b ? true : false,
+    toCode: (a, b) => `(${a} > ${b} ? true : false)`,
+    onlyFor: ['boolean'],
+  },
+  lt: {
+    function: (a, b) => a > b ? true : false,
+    toCode: (a, b) => `(${a} > ${b} ? true : false)`,
+    onlyFor: ['boolean'],
+  },
 })
