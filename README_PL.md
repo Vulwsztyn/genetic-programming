@@ -1,13 +1,13 @@
 # Programowanie Genetyczne
 
 ## Intro
-Celem projektu było stworzenie stronyu umożliwiające użytkownikowi generację matematycznych funckji, które jak najlepiej odwzorowuje dane punkty. Strona ta istnieje pod adresem: https://vulwsztyn.github.io/genetic-programming/.
+Celem projektu było stworzenie strony umożliwiającej użytkownikowi generację matematycznych funkcji, które jak najlepiej odwzorowuje dane punkty. Strona ta istnieje pod adresem: https://vulwsztyn.github.io/genetic-programming/.
 
 ## Wyjaśnienie o co chodzi dla zwykłych śmiertelników
 
 ### Założenia
 
-Załóżmy, że otrzymałeś zadanie wykonania tego, co robi ten program i otrzymałeś zbiór punktów, które masz jak najlepiej przybliżyć losową funkcją. Załóżmy także, że nie masz pojęcia o regresji liniwej, metedzie Newtona etc., ale za to bardzo szybko tworzysz i lsoowe funkcje i je ewaluujesz (bo komputery tak robią).
+Załóżmy, że otrzymałeś zadanie wykonania tego, co robi ten program i otrzymałeś zbiór punktów, które masz jak najlepiej przybliżyć losową funkcją. Załóżmy także, że nie masz pojęcia o regresji liniowej, metodzie Newtona etc., ale za to bardzo szybko tworzysz i losowe funkcje i je ewaluujesz (bo komputery tak robią).
 
 
 ### Jak wygenerować losową funkcję (na podstawie przykładu)
@@ -18,7 +18,7 @@ Możesz wybierać funkcje lub wartości np. rzucając kostką.
 
 W dalszej części pomijam wszystkie "załóżmy".
 
-Proces zaczyna sie wybraniem funckji `sin`. `sin` jest funkcją unarną (ma 1 parametr), więc ponownie musimy wybrać pojedynczą funkcję lub wartość. Aktualnie nasza losowa funkcja wygląda tak: `sin(_)` (`_` Będzie wypełnione w następnym kroku).
+Proces zaczyna sie wybraniem funkcji `sin`. `sin` jest funkcją unarną (ma 1 parametr), więc ponownie musimy wybrać pojedynczą funkcję lub wartość. Aktualnie nasza losowa funkcja wygląda tak: `sin(_)` (`_` Będzie wypełnione w następnym kroku).
 
 By wypełnić lukę wybierasz mnożenie. mnożenie ma 2 parametry więc nasza funkcja to teraz: `sin(_*_)` i trzeba wybrać 2. funkcje lub parametry by uzupełnić luki
 
@@ -26,44 +26,44 @@ Wybierasz `range(-10,10)` i `log`. `range` został wybrany celowo by pokazać, j
 
 Istnieje ograniczenie na liczbę "poziomów" funkcji, więc gdyby było to `3` to w następnym kroku musiałbyś wybrać wartość, ale nie funkcję. Załóżmy, że tak jest.
 
- Wybierasz `2` i `x0` by wypełnić luki. ostatecznie funkcja przybiera postać: `sin(-6*log(2,x0))`.
+ Wybierasz `2` i `x0` by wypełnić luki. Ostatecznie funkcja przybiera postać: `sin(-6*log(2,x0))`.
 
-Może ona lepiej lub gorzej przybliżać dane punkty, więc generujesz jeszcze 24999 kolejnych funkcji tym samym tworząc pokolenie funkcji (osobników). 
+Może ona lepiej lub gorzej przybliżać dane punkty, więc generujesz jeszcze 24999 kolejnych funkcji, tym samym tworząc pokolenie funkcji (osobników). 
 
 ### Jak są generowane kolejne pokolenia?
 
 Kolejne pokolenia są generowane mniej losowo niż pierwsze. Są tworzone poprzez mutację lub krzyżowanie wykonywane na obecnej populacji.
 
-Mutacja działa następująco: wybeirasz pojedynczą funkcję z obecnej populacji np. `sin(-6*log(2,x0))` i wybierasz, którą jej część zmutować, czyli podmienić. Wybierasz `log`, więc usuwasz `log` wraz z parametrami i zastępujesz `_`: `sin(-6*_)` i działasz tak jakbyś tworzył funkcję od nowa wypełniając lukę. Mógłbyś stworzyć `sin(-6*(x0+4))` lub `sin(-6*x0)` lub `sin(-6*cos(2))` (tak, to jest stała), etc.
+Mutacja działa następująco: wybierasz pojedynczą funkcję z obecnej populacji np. `sin(-6*log(2,x0))` i wybierasz, którą jej część zmutować, czyli podmienić. Wybierasz `log`, więc usuwasz `log` wraz z parametrami i zastępujesz `_`: `sin(-6*_)` i działasz tak, jakbyś tworzył funkcję od nowa wypełniając lukę. Mógłbyś stworzyć `sin(-6*(x0+4))` lub `sin(-6*x0)` lub `sin(-6*cos(2))` (tak, to jest stała), etc.
 
-Krzyżowanie polega na wyborze 2. osobników z populacji i zamienieniu ich części. Wybeirasz `log(x0,(4*x0))+sin(cos(2))` i `2*log(4,log(2,x0))` z pierwszej do wymiany wybierasz `(4*x0)`, z frugiej `2`. Krzyżowanie tworzy, więc następujące "dzieci": `log(x0,2)+sin(cos(2))` i `(4*x0)*log(4,log(2,x0))`.
+Krzyżowanie polega na wyborze 2. osobników z populacji i zamienieniu ich części. Wybierasz `log(x0,(4*x0))+sin(cos(2))` i `2*log(4,log(2,x0))` z pierwszej do wymiany wybierasz `(4*x0)`, z drugiej `2`. Krzyżowanie tworzy, więc następujące "dzieci": `log(x0,2)+sin(cos(2))` i `(4*x0)*log(4,log(2,x0))`.
 
-Tworzenie "dzieci" przy pomocy mutacji i krzyżowania następuje aż nie zostanie utworzone nowe pokolenie o liczności poprzedniego. Wtedy następuje wymiana pokoleń i proces zaczyna się na nowo aż nie zostanie osiągniey limit populacji.
+Tworzenie "dzieci" przy pomocy mutacji i krzyżowania następuje, aż nie zostanie utworzone nowe pokolenie o liczności poprzedniego. Wtedy następuje wymiana pokoleń i proces zaczyna się na nowo, aż nie zostanie osiągniey limit populacji.
 
 ### Jak oceniany jest osobnik?
 
 Funkcja osobnika otrzymuje jako parametry punkty podane przez użytkownika.
 Należy zauważyć, że ostatnia wartość danego punktu nigdy nie jest traktowana jako wartość wejściowa np. dla punktu`2, 4` `x0 = 2` i `y = 4`, a `y` nigdy nie jest parametrem funkcji-osobnika. Podobnie dla `0, 1, 1, 1` `x0 = 0, x1 = 1, x2 = 1, y = 1`. 
 
-Następnie obliczana jest róznica między wartością zwróconą przez funkcję a podaną przez użytkownika (`y`). Różnica jest podnoszona do 2. potęgi. Suma błędów podniesionych do drugiej potęgi to "fitness" osobnika. Im niższy tym dany osobnik lepiej przybliża dane punkty.
+Następnie obliczana jest różnica między wartością zwróconą przez funkcję a podaną przez użytkownika (`y`). Różnica jest podnoszona do 2. potęgi. Suma błędów podniesionych do drugiej potęgi to "fitness" osobnika. Im niższy tym dany osobnik lepiej przybliża dane punkty.
 
 ## Interfejs użytkownika
 
 Użytkownik może zdefiniować następujące parametry:
 
-- `Problem type` - deiniuje, czy domena funkcji ma być rzeczywista, całkowita, lub boolowska. Wpływa na zbiór możliwych do użycia funkcji.
-- `Population size` - definiuje liczbę osobników w pokoleniu
-- `Max tree depth` - definiuje maksymalny poziom zagnieżdżenia funkcji
-- `Tournament Size` - definiuje wielkość turnieju. Najlepszy wygrywa.
-- `Crossover Probability` - prawdopodobieństwo krzyżowania zamiast mutacji
-- `Points` -  zbiór punktów do przybliżenia
-- `Possible leaves` - definiuje możliwe wartości w liściach drzewa funkcji. Jenda linia powinna zawierać wartość (e.g. `3.14`) lub zakres (e.g. `(-10,10)`).  Automatycznie zawarte są wszystkie zmienne ( `x0, x1, x2, ...`).
-- `Possible functions` - zbiór funkcji, które mogą być użyte do utworzenia funkcji
+- `Typ Problemu` - definiuje, czy domena funkcji ma być rzeczywista, całkowita, lub boolowska. Wpływa na zbiór możliwych do użycia funkcji.
+- `Wielkość Populacji` - definiuje liczbę osobników w pokoleniu
+- `Maksymalna Głębokość Drzewa` - definiuje maksymalny poziom zagnieżdżenia funkcji
+- `Wielkość turnieju` - definiuje wielkość turnieju. Najlepszy wygrywa.
+- `Prawdopodobieńswto krzyżowania` - prawdopodobieństwo krzyżowania zamiast mutacji
+- `Punkty` -  zbiór punktów do przybliżenia
+- `Możliwe liście` - definiuje możliwe wartości w liściach drzewa funkcji. Jedna linia powinna zawierać wartość (e.g. `3.14`) lub zakres (e.g. `(-10,10)`).  Automatycznie zawarte są wszystkie zmienne ( `x0, x1, x2, ...`).
+- `Dostępne Funkcje` - zbiór funkcji, które mogą być użyte do utworzenia funkcji
 
-The user is also presented with 4 buttons:
-- `Create first generation` - tworzy pierwsze pokolenie
-- `Create next generation` - tworzy kolejne pokolenie
-- `Create n generations` - jak wyżej, ale `n` razy
+Użytkownik ma także dostęp do 4. guzików:
+- `Stwórz Pierwsze Pokolenie` - tworzy pierwsze pokolenie
+- `Stwórz Następne Pokolenie` - tworzy kolejne pokolenie
+- `Stwórz N Pokoleń` - jak wyżej, ale `n` razy
 - `Reset` - resetuje postęp algorytmu
 
 ## Logika
@@ -86,12 +86,12 @@ interface FNode { // wierzchołek będący funkcją
 type Node = TNode | FNode
 ```
 
-Jeżeli pokolenie jest pierwsze to wszystkie osobniki były stworzone losowo ze wszystkich dostępnych funkcji i wartośći. Pokolenie jest zawsze posortowane po wartości "fitnessu".
+Jeżeli pokolenie jest pierwsze to wszystkie osobniki były stworzone losowo ze wszystkich dostępnych funkcji i wartości. Pokolenie jest zawsze posortowane po wartości "fitnessu".
 
-Jeżeli pokolenie nie jest pierwsze to jest genereowane poprzez mutację i krzyżowanie osobników z poprzeniego pokolenia. Wybór operatora (mutacja lub krzyżowanie) następuje losowo z prawdopodobieństwem `Crossover Probability`. Mutacja tworzy jedno "dziecko", krzyżowanie 2
+Jeżeli pokolenie nie jest pierwsze to jest genereowane poprzez mutację i krzyżowanie osobników z poprzedniego pokolenia. Wybór operatora (mutacja lub krzyżowanie) następuje losowo z prawdopodobieństwem `Prawdopodobieńswto krzyżowania`. Mutacja tworzy jedno "dziecko", krzyżowanie 2
 
-"Rodzice" są wybiernai na podstawie turnieju. `Tournament Size` osobników jest wybieranych losowo i wygrywa (czyli zostaje rodzicem) najlepszy z nich.
+"Rodzice" są wybierani na podstawie turnieju. `Wielkość turnieju` osobników jest wybieranych losowo i wygrywa (czyli zostaje rodzicem) najlepszy z nich.
 
-Mutacja to zastąpienie losowego węzła (funkjci lub wartości) nowym losowo wygenerowanym węzłem.
+Mutacja to zastąpienie losowego węzła (funkcji lub wartości) nowym losowo wygenerowanym węzłem.
 
 Krzyżowanie to wymiana losowych węzłów pomiędzy rodzicami
