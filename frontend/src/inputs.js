@@ -12,7 +12,7 @@ import Checkbox from '@material-ui/core/Checkbox'
 import Grid from '@material-ui/core/Grid'
 // import * as R from 'ramda'
 import i18n from './i18n'
-import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -198,7 +198,7 @@ function Inputs({
         </Grid>
       </Grid>
       <Grid container spacing={1}>
-        <Grid item xs={12} >
+        <Grid item xs={12}>
           <FormControl component='fieldset'>
             <FormLabel component='legend'>{i18n.t('problemType')}</FormLabel>
             <RadioGroup
@@ -218,7 +218,7 @@ function Inputs({
             </RadioGroup>
           </FormControl>
         </Grid>
-        <Grid item xs={12} >
+        <Grid item xs={12}>
           <FormControl component='fieldset'>
             {Object.keys(functions).map((key) => (
               <FormControlLabel

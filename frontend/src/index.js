@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals'
 import { createStore } from 'redux'
 import { mainReducer } from './reducers'
 import { Provider } from 'react-redux'
-import { BrowserRouter as Router, Switch, Route, Link, useParams, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { composeWithDevTools } from 'redux-devtools-extension'
 const store = createStore(mainReducer, composeWithDevTools())
 
@@ -14,9 +14,9 @@ ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
       <Router>
-      <Route exact path="/genetic-programming">
-        <Redirect to="/genetic-programming/en" /> 
-      </Route>
+        <Route exact path='/genetic-programming'>
+          <Redirect to='/genetic-programming/en' />
+        </Route>
         <Switch>
           <Route path='/genetic-programming/:lang' children={<App />} />
         </Switch>
