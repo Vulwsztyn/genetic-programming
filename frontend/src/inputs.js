@@ -83,7 +83,9 @@ function Inputs({
       }
     }, 0)
   }, [createNextGenerationButtonFunction, currentGeneration, desiredGeneration])
-
+  useEffect(() => {
+    document.title = i18n.t('title')
+  }, [])
   return (
     <form className={classes.root} noValidate autoComplete='off'>
       <Grid container spacing={1}>

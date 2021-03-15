@@ -19,5 +19,6 @@
     "function": "Function",
     "errorSquared": "Error Squared",
     "showCode": "Show Code",
-    "globalBest": "Global Best"
+    "globalBest": "Global Best",
+    "title": "Genetic Programming"
 }
