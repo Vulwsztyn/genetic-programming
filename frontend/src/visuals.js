@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import { Typography } from '@material-ui/core'
 import SyntaxHighlighter from 'react-syntax-highlighter'
+import i18n from './i18n'
 const useStyles = makeStyles({
   table: {
     // minWidth: 650,
@@ -32,7 +33,7 @@ function Visuals({ generation, bestSpecimens, bestSpecimen }) {
       <TableCell align='right'>{row.fitness}</TableCell>
       <TableCell align='right'>
         <Button variant='contained' color='primary' onClick={() => setCode(row.code)}>
-          Show code
+          {i18n.t('showCode')}
         </Button>
       </TableCell>
     </TableRow>
@@ -57,13 +58,13 @@ function Visuals({ generation, bestSpecimens, bestSpecimen }) {
 
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label='simple table'>
-          {(bestSpecimen ? [bestSpecimen] : []).map((row, i) => mapSpecimenToRow(row, i, 'Global Best'))}
+          {(bestSpecimen ? [bestSpecimen] : []).map((row, i) => mapSpecimenToRow(row, i, i18n.t('globalBest')))}
           <TableHead>
             <TableRow>
-              <TableCell align='right'>Number</TableCell>
-              <TableCell align='right'>Function</TableCell>
-              <TableCell align='right'>Error Squared</TableCell>
-              <TableCell align='right'>Show Code</TableCell>
+              <TableCell align='right'>{i18n.t('number')}</TableCell>
+              <TableCell align='right'>{i18n.t('function')}</TableCell>
+              <TableCell align='right'>{i18n.t('errorSquared')}</TableCell>
+              <TableCell align='right'>{i18n.t('showCode')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>{bestSpecimens.map((row, i) => mapSpecimenToRow(row, i))}</TableBody>

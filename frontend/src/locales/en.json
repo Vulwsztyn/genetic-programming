@@ -1,0 +1,23 @@
+{
+    "populationSize": "Population Size",
+    "maxTreeDepth": "Max Tree Depth",
+    "tournamentSize": "Tournament Size",
+    "crossoverProbability": "Crossover Probability",
+    "pointsWithInfo": "Points (last column is y)",
+    "possibleLeaves": "Possible leaves",
+    "problemType": "Problem Type",
+    "real": "Real",
+    "integer": "Integer",
+    "boolean": "Boolean",
+    "createFirstGeneration": "Create First Generation",
+    "createNextGeneration": "Create Next Generation",
+    "runNGenerations": "Run N Generations",
+    "numberOfGenerationsToRun": "Number of Generations To Run",
+    "generation": "Generation",
+    "code": "Code",
+    "number": "Number",
+    "function": "Function",
+    "errorSquared": "Error Squared",
+    "showCode": "Show Code",
+    "globalBest": "Global Best"
+}

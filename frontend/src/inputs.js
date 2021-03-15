@@ -11,6 +11,9 @@ import { connect } from 'react-redux'
 import Checkbox from '@material-ui/core/Checkbox'
 import Grid from '@material-ui/core/Grid'
 // import * as R from 'ramda'
+import i18n from './i18n'
+import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -46,6 +49,8 @@ function Inputs({
   setDesiredGeneration,
   desiredGeneration,
 }) {
+  const { lang } = useParams()
+  i18n.changeLanguage(lang)
   const classes = useStyles()
   const [numberOfgeneraionsToRun, setNumberOfgeneraionsToRun] = useState(5)
   const capitalise = (e) => e[0].toUpperCase() + e.slice(1)
@@ -83,22 +88,22 @@ function Inputs({
     <form className={classes.root} noValidate autoComplete='off'>
       <Grid container spacing={1}>
         {[
-          { name: 'population-size', value: populationSize, stateField: 'populationSize' },
+          { name: 'populationSize', value: populationSize, stateField: 'populationSize' },
           // { name: 'number-of-generations', value: numberOfGenerations, stateField: 'numberOfGenerations' },
-          { name: 'max-tree-depth', value: maxTreeDepth, stateField: 'maxTreeDepth' },
-          { name: 'tournament-size', value: tournamentSize, stateField: 'tournamentSize' },
+          { name: 'maxTreeDepth', value: maxTreeDepth, stateField: 'maxTreeDepth' },
+          { name: 'tournamentSize', value: tournamentSize, stateField: 'tournamentSize' },
           // {
           //   name: 'tournament-winning-probability',
           //   value: tournamentWinningProbability,
           //   stateField: 'tournamentWinningProbability',
           // },
-          { name: 'crossover-probabilty', value: crossoverProbability, stateField: 'crossoverProbability' },
+          { name: 'crossoverProbability', value: crossoverProbability, stateField: 'crossoverProbability' },
         ].map(({ name, value, stateField }) => (
           <Grid item xs={12} sm={6} md={3} lg={2}>
             <TextField
               id={name}
               key={name}
-              label={name.split('-').map(capitalise).join(' ')}
+              label={i18n.t(name)}
               type='number'
               value={value}
               onChange={(e) => setValue(stateField, Number(e.target.value))}
@@ -113,7 +118,7 @@ function Inputs({
         <Grid item xs={12} sm={6} md={3} lg={2}>
           <TextField
             id='points'
-            label='Points (last column is y)'
+            label={i18n.t('pointsWithInfo')}
             multiline
             rows={10}
             value={pointsRaw}
@@ -125,7 +130,7 @@ function Inputs({
         <Grid item xs={12} sm={6} md={3} lg={2}>
           <TextField
             id='leaves'
-            label='Possible leaves'
+            label={i18n.t('possibleLeaves')}
             multiline
             rows={10}
             value={problemType === 'boolean' ? 'true, false' : leavesRaw}
@@ -138,7 +143,7 @@ function Inputs({
       <Grid container spacing={1}>
         <Grid item xs={12} sm={6}>
           <FormControl component='fieldset'>
-            <FormLabel component='legend'>Problem type</FormLabel>
+            <FormLabel component='legend'>{i18n.t('problemType')}</FormLabel>
             <RadioGroup
               aria-label='problem-type'
               name='problem-type'
@@ -150,7 +155,7 @@ function Inputs({
                   key={e}
                   value={e}
                   control={<Radio disabled={algorithmState !== 'BEFORE_RUN'} />}
-                  label={capitalise(e)}
+                  label={capitalise(i18n.t(e))}
                 />
               ))}
             </RadioGroup>
@@ -185,7 +190,7 @@ function Inputs({
             color='primary'
             onClick={createGenerationZeroButtonFunction}
           >
-            Create first generation
+            {i18n.t('createFirstGeneration')}
           </Button>
         </Grid>
         <Grid item xs={12} sm={6} md={3} lg={2}>
@@ -196,12 +201,12 @@ function Inputs({
             onClick={createNextGenerationButtonFunction}
             // disabled={algorithmState === 'BEFORE_RUN'}
           >
-            Create Next Generation
+            {i18n.t('createNextGeneration')}
           </Button>
         </Grid>
         <Grid item xs={12} sm={6} md={3} lg={2}>
           <Button className={classes.button} variant='contained' color='primary' onClick={runButtonFunction}>
-            Run N Generations
+            {i18n.t('runNGenerations')}
           </Button>
         </Grid>
         <Grid item xs={12} sm={6} md={3} lg={2}>
@@ -209,7 +214,7 @@ function Inputs({
             // id={name}
             // key={name}
             // label={name.split('-').map(capitalise).join(' ')}
-            label='Number of generations to run'
+            label={i18n.t('numberOfGenerationsToRun')}
             type='number'
             value={numberOfgeneraionsToRun}
             onChange={(e) => setNumberOfgeneraionsToRun(e.target.value)}
