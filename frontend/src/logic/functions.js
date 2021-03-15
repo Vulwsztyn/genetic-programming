@@ -96,32 +96,32 @@ export default addNameAndArity({
     toCode: (a) => `-${a}`,
     onlyFor: ['integer', 'real'],
   },
-  or: {
+  bitwiseOr: {
     function: (a, b) => a | b,
     toCode: (a, b) => `(${a} | ${b})`,
     onlyFor: ['integer'],
   },
-  and: {
+  bitwiseAnd: {
     function: (a, b) => a & b,
     toCode: (a, b) => `(${a} & ${b})`,
     onlyFor: ['integer'],
   },
-  xor: {
+  bitwiseXor: {
     function: (a, b) => a ^ b,
     toCode: (a, b) => `(${a} ^ ${b})`,
     onlyFor: ['integer'],
   },
-  bitwiseOr: {
+  or: {
     function: (a, b) => a | b,
     toCode: (a, b) => `(${a} || ${b})`,
     onlyFor: ['boolean'],
   },
-  bitwiseAnd: {
+  and: {
     function: (a, b) => a && b,
     toCode: (a, b) => `(${a} && ${b})`,
     onlyFor: ['boolean'],
   },
-  bitwiseXor: {
+  xor: {
     function: bitwiseXor,
     toCode: (a, b) => `bitwiseXor(${a}, ${b})`,
     codeAddition: `const bitwiseXor = ${bitwiseXor.toString()}`,
