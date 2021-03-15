@@ -88,6 +88,61 @@ function Inputs({
   }, [])
   return (
     <form className={classes.root} noValidate autoComplete='off'>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Button
+            className={classes.button}
+            variant='contained'
+            color='primary'
+            onClick={createGenerationZeroButtonFunction}
+          >
+            {i18n.t('createFirstGeneration')}
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            className={classes.button}
+            variant='contained'
+            color='primary'
+            onClick={createNextGenerationButtonFunction}
+            // disabled={algorithmState === 'BEFORE_RUN'}
+          >
+            {i18n.t('createNextGeneration')}
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Button className={classes.button} variant='contained' color='primary' onClick={runButtonFunction}>
+            {i18n.t('runNGenerations')}
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            // id={name}
+            // key={name}
+            // label={name.split('-').map(capitalise).join(' ')}
+            label={i18n.t('numberOfGenerationsToRun')}
+            type='number'
+            value={numberOfgeneraionsToRun}
+            onChange={(e) => setNumberOfgeneraionsToRun(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant='outlined'
+            // disabled={algorithmState !== 'BEFORE_RUN'}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Button className={classes.button} variant='contained' color='primary' onClick={resetAlgorithmState}>
+            Reset
+          </Button>
+        </Grid>
+        {/* <Button variant='contained' color='primary'>
+          Primary
+        </Button>
+        <Button variant='contained' color='primary'>
+          Primary
+        </Button> */}
+      </Grid>
       <Grid container spacing={1}>
         {[
           { name: 'populationSize', value: populationSize, stateField: 'populationSize' },
@@ -101,7 +156,7 @@ function Inputs({
           // },
           { name: 'crossoverProbability', value: crossoverProbability, stateField: 'crossoverProbability' },
         ].map(({ name, value, stateField }) => (
-          <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Grid item xs={12}>
             <TextField
               id={name}
               key={name}
@@ -117,7 +172,7 @@ function Inputs({
             />
           </Grid>
         ))}
-        <Grid item xs={12} sm={6} md={3} lg={2}>
+        <Grid item xs={12}>
           <TextField
             id='points'
             label={i18n.t('pointsWithInfo')}
@@ -129,7 +184,7 @@ function Inputs({
             // disabled={algorithmState !== 'BEFORE_RUN'}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3} lg={2}>
+        <Grid item xs={12}>
           <TextField
             id='leaves'
             label={i18n.t('possibleLeaves')}
@@ -143,7 +198,7 @@ function Inputs({
         </Grid>
       </Grid>
       <Grid container spacing={1}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} >
           <FormControl component='fieldset'>
             <FormLabel component='legend'>{i18n.t('problemType')}</FormLabel>
             <RadioGroup
@@ -163,7 +218,7 @@ function Inputs({
             </RadioGroup>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} >
           <FormControl component='fieldset'>
             {Object.keys(functions).map((key) => (
               <FormControlLabel
@@ -183,61 +238,6 @@ function Inputs({
             ))}
           </FormControl>
         </Grid>
-      </Grid>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={3} lg={2}>
-          <Button
-            className={classes.button}
-            variant='contained'
-            color='primary'
-            onClick={createGenerationZeroButtonFunction}
-          >
-            {i18n.t('createFirstGeneration')}
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3} lg={2}>
-          <Button
-            className={classes.button}
-            variant='contained'
-            color='primary'
-            onClick={createNextGenerationButtonFunction}
-            // disabled={algorithmState === 'BEFORE_RUN'}
-          >
-            {i18n.t('createNextGeneration')}
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3} lg={2}>
-          <Button className={classes.button} variant='contained' color='primary' onClick={runButtonFunction}>
-            {i18n.t('runNGenerations')}
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3} lg={2}>
-          <TextField
-            // id={name}
-            // key={name}
-            // label={name.split('-').map(capitalise).join(' ')}
-            label={i18n.t('numberOfGenerationsToRun')}
-            type='number'
-            value={numberOfgeneraionsToRun}
-            onChange={(e) => setNumberOfgeneraionsToRun(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant='outlined'
-            // disabled={algorithmState !== 'BEFORE_RUN'}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3} lg={2}>
-          <Button className={classes.button} variant='contained' color='primary' onClick={resetAlgorithmState}>
-            Reset
-          </Button>
-        </Grid>
-        {/* <Button variant='contained' color='primary'>
-          Primary
-        </Button>
-        <Button variant='contained' color='primary'>
-          Primary
-        </Button> */}
       </Grid>
     </form>
   )
