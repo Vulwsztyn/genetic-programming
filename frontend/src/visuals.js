@@ -40,7 +40,7 @@ function Visuals({ generation, bestSpecimens, bestSpecimen }) {
   )
   return (
     <>
-      <h1>Generation: {generation}</h1>
+      <h1>{i18n.t("generation")}: {generation}</h1>
       {code || bestSpecimen?.code ? (
         <>
           <h2>Code:</h2>
