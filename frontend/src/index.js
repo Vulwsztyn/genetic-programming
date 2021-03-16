@@ -6,19 +6,18 @@ import reportWebVitals from './reportWebVitals'
 import { createStore } from 'redux'
 import { mainReducer } from './reducers'
 import { Provider } from 'react-redux'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 import { composeWithDevTools } from 'redux-devtools-extension'
 const store = createStore(mainReducer, composeWithDevTools())
 
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
-      <Router>
-        <Route exact path='/genetic-programming'>
-          <Redirect to='/genetic-programming/en' />
-        </Route>
+      <Router basename={process.env.PUBLIC_URL}>
         <Switch>
-          <Route path='/genetic-programming/:lang' children={<App />} />
+          <Route path='/:lang' children={<App />} />
+          <Route path='/' children={<App />} />
+          <Route path='' children={<App />} />
         </Switch>
       </Router>
     </React.StrictMode>
