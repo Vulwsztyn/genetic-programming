@@ -1,7 +1,7 @@
 # Programowanie Genetyczne
 
 ## Intro
-Celem projektu było stworzenie strony umożliwiającej użytkownikowi generację matematycznych funkcji, które jak najlepiej odwzorowuje dane punkty. Strona ta istnieje pod adresem: https://vulwsztyn.github.io/genetic-programming/.
+Celem projektu było stworzenie strony umożliwiającej użytkownikowi generację matematycznych funkcji, które jak najlepiej odwzorowuje dane punkty. Strona ta istnieje pod adresem: https://vulwsztyn.github.io/genetic-programming/#/pl.
 
 ## Wyjaśnienie o co chodzi dla zwykłych śmiertelników
 
