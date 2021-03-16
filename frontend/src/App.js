@@ -4,9 +4,13 @@ import Visuals from './visuals'
 import Logic from './logic/Component'
 import Algorithm from './logic/Algorithm'
 import Grid from '@material-ui/core/Grid'
+import { useParams } from 'react-router-dom'
+import i18n from './i18n'
+
 export default function App() {
   const algorithm = new Algorithm()
-
+  const { lang } = useParams()
+  i18n.changeLanguage(lang)
   return (
     <div className='App'>
       <Grid container>

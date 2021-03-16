@@ -13,6 +13,8 @@ import Button from '@material-ui/core/Button'
 import { Typography } from '@material-ui/core'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import i18n from './i18n'
+import { useParams } from 'react-router-dom'
+
 const useStyles = makeStyles({
   table: {
     // minWidth: 650,
@@ -20,6 +22,8 @@ const useStyles = makeStyles({
 })
 
 function Visuals({ generation, bestSpecimens, bestSpecimen }) {
+  const { lang } = useParams()
+  i18n.changeLanguage(lang)
   const classes = useStyles()
   const [code, setCode] = useState(bestSpecimen?.code)
   const mapSpecimenToRow = (row, i, title) => (
