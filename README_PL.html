@@ -1,0 +1,66 @@
+<h1 id="programowanie-genetyczne">Programowanie Genetyczne</h1>
+<h2 id="intro">Intro</h2>
+<p>Celem projektu było stworzenie strony umożliwiającej użytkownikowi generację matematycznych funkcji, które jak najlepiej odwzorowuje dane punkty. Strona ta istnieje pod adresem: <a href="https://vulwsztyn.github.io/genetic-programming/#/pl">https://vulwsztyn.github.io/genetic-programming/#/pl</a>.</p>
+<h2 id="wyja-nienie-o-co-chodzi-dla-zwyk-ych-miertelnik-w">Wyjaśnienie o co chodzi dla zwykłych śmiertelników</h2>
+<h3 id="za-o-enia">Założenia</h3>
+<p>Załóżmy, że otrzymałeś zadanie wykonania tego, co robi ten program i otrzymałeś zbiór punktów, które masz jak najlepiej przybliżyć losową funkcją. Załóżmy także, że nie masz pojęcia o regresji liniowej, metodzie Newtona etc., ale za to bardzo szybko tworzysz i losowe funkcje i je ewaluujesz (bo komputery tak robią).</p>
+<h3 id="jak-wygenerowa-losow-funkcj-na-podstawie-przyk-adu-">Jak wygenerować losową funkcję (na podstawie przykładu)</h3>
+<p>Dane Ci są: zbiór funkcji <code>sin, cos, multiply, add, log</code> i wartości <code>x0, 1, 0, 2, range(-10,10)</code> (range oznacza, że możesz wziąć losową wartość z tego zakresu).</p>
+<p>Możesz wybierać funkcje lub wartości np. rzucając kostką.</p>
+<p>W dalszej części pomijam wszystkie &quot;załóżmy&quot;.</p>
+<p>Proces zaczyna sie wybraniem funkcji <code>sin</code>. <code>sin</code> jest funkcją unarną (ma 1 parametr), więc ponownie musimy wybrać pojedynczą funkcję lub wartość. Aktualnie nasza losowa funkcja wygląda tak: <code>sin(_)</code> (<code>_</code> Będzie wypełnione w następnym kroku).</p>
+<p>By wypełnić lukę wybierasz mnożenie. mnożenie ma 2 parametry więc nasza funkcja to teraz: <code>sin(_*_)</code> i trzeba wybrać 2. funkcje lub parametry by uzupełnić luki</p>
+<p>Wybierasz <code>range(-10,10)</code> i <code>log</code>. <code>range</code> został wybrany celowo by pokazać, jak działa. Musisz wygenerować (np. przy pomocy pythona) 1. losową wartość z zakresu (rzeczywistą jeżeli domena jest rzeczywista, liczbę całkowitą, gdy całkowita). Wygenerowałeś -6. Funkcja wygląda teraz następująco: <code>sin(-6*log(_,_))</code>.</p>
+<p>Istnieje ograniczenie na liczbę &quot;poziomów&quot; funkcji, więc gdyby było to <code>3</code> to w następnym kroku musiałbyś wybrać wartość, ale nie funkcję. Załóżmy, że tak jest.</p>
+<p> Wybierasz <code>2</code> i <code>x0</code> by wypełnić luki. Ostatecznie funkcja przybiera postać: <code>sin(-6*log(2,x0))</code>.</p>
+<p>Może ona lepiej lub gorzej przybliżać dane punkty, więc generujesz jeszcze 24999 kolejnych funkcji, tym samym tworząc pokolenie funkcji (osobników). </p>
+<h3 id="jak-s-generowane-kolejne-pokolenia-">Jak są generowane kolejne pokolenia?</h3>
+<p>Kolejne pokolenia są generowane mniej losowo niż pierwsze. Są tworzone poprzez mutację lub krzyżowanie wykonywane na obecnej populacji.</p>
+<p>Mutacja działa następująco: wybierasz pojedynczą funkcję z obecnej populacji np. <code>sin(-6*log(2,x0))</code> i wybierasz, którą jej część zmutować, czyli podmienić. Wybierasz <code>log</code>, więc usuwasz <code>log</code> wraz z parametrami i zastępujesz <code>_</code>: <code>sin(-6*_)</code> i działasz tak, jakbyś tworzył funkcję od nowa wypełniając lukę. Mógłbyś stworzyć <code>sin(-6*(x0+4))</code> lub <code>sin(-6*x0)</code> lub <code>sin(-6*cos(2))</code> (tak, to jest stała), etc.</p>
+<p>Krzyżowanie polega na wyborze 2. osobników z populacji i zamienieniu ich części. Wybierasz <code>log(x0,(4*x0))+sin(cos(2))</code> i <code>2*log(4,log(2,x0))</code> z pierwszej do wymiany wybierasz <code>(4*x0)</code>, z drugiej <code>2</code>. Krzyżowanie tworzy, więc następujące &quot;dzieci&quot;: <code>log(x0,2)+sin(cos(2))</code> i <code>(4*x0)*log(4,log(2,x0))</code>.</p>
+<p>Tworzenie &quot;dzieci&quot; przy pomocy mutacji i krzyżowania następuje, aż nie zostanie utworzone nowe pokolenie o liczności poprzedniego. Wtedy następuje wymiana pokoleń i proces zaczyna się na nowo, aż nie zostanie osiągniey limit populacji.</p>
+<h3 id="jak-oceniany-jest-osobnik-">Jak oceniany jest osobnik?</h3>
+<p>Funkcja osobnika otrzymuje jako parametry punkty podane przez użytkownika.
+Należy zauważyć, że ostatnia wartość danego punktu nigdy nie jest traktowana jako wartość wejściowa np. dla punktu<code>2, 4</code> <code>x0 = 2</code> i <code>y = 4</code>, a <code>y</code> nigdy nie jest parametrem funkcji-osobnika. Podobnie dla <code>0, 1, 1, 1</code> <code>x0 = 0, x1 = 1, x2 = 1, y = 1</code>. </p>
+<p>Następnie obliczana jest różnica między wartością zwróconą przez funkcję a podaną przez użytkownika (<code>y</code>). Różnica jest podnoszona do 2. potęgi. Suma błędów podniesionych do drugiej potęgi to &quot;fitness&quot; osobnika. Im niższy tym dany osobnik lepiej przybliża dane punkty.</p>
+<h2 id="interfejs-u-ytkownika">Interfejs użytkownika</h2>
+<p>Użytkownik może zdefiniować następujące parametry:</p>
+<ul>
+<li><code>Typ Problemu</code> - definiuje, czy domena funkcji ma być rzeczywista, całkowita, lub boolowska. Wpływa na zbiór możliwych do użycia funkcji.</li>
+<li><code>Wielkość Populacji</code> - definiuje liczbę osobników w pokoleniu</li>
+<li><code>Maksymalna Głębokość Drzewa</code> - definiuje maksymalny poziom zagnieżdżenia funkcji</li>
+<li><code>Wielkość turnieju</code> - definiuje wielkość turnieju. Najlepszy wygrywa.</li>
+<li><code>Prawdopodobieńswto krzyżowania</code> - prawdopodobieństwo krzyżowania zamiast mutacji</li>
+<li><code>Punkty</code> -  zbiór punktów do przybliżenia</li>
+<li><code>Możliwe liście</code> - definiuje możliwe wartości w liściach drzewa funkcji. Jedna linia powinna zawierać wartość (e.g. <code>3.14</code>) lub zakres (e.g. <code>(-10,10)</code>).  Automatycznie zawarte są wszystkie zmienne ( <code>x0, x1, x2, ...</code>).</li>
+<li><code>Dostępne Funkcje</code> - zbiór funkcji, które mogą być użyte do utworzenia funkcji</li>
+</ul>
+<p>Użytkownik ma także dostęp do 4. guzików:</p>
+<ul>
+<li><code>Stwórz Pierwsze Pokolenie</code> - tworzy pierwsze pokolenie</li>
+<li><code>Stwórz Następne Pokolenie</code> - tworzy kolejne pokolenie</li>
+<li><code>Stwórz N Pokoleń</code> - jak wyżej, ale <code>n</code> razy</li>
+<li><code>Reset</code> - resetuje postęp algorytmu</li>
+</ul>
+<h2 id="logika">Logika</h2>
+<h3 id="przyk-adowy-osobnik-">Przykładowy osobnik:</h3>
+<p><img src="https://github.com/Vulwsztyn/genetic-programming/blob/master/assets/eq_as_tree.png?raw=true" alt="Equation Tree"></p>
+<p>Algorytm generuje osobniki, które możnaby otypować następująco:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">interface</span> TNode { <span class="hljs-comment">// wierzchołek będący liściem</span>
+    <span class="hljs-keyword">type</span>: <span class="hljs-string">'T'</span>
+    value: <span class="hljs-built_in">Number</span> | <span class="hljs-built_in">boolean</span> 
+    level: <span class="hljs-built_in">Number</span> <span class="hljs-comment">// liczba całkowita</span>
+}
+<span class="hljs-keyword">interface</span> FNode { <span class="hljs-comment">// wierzchołek będący funkcją</span>
+    <span class="hljs-keyword">type</span>: <span class="hljs-string">'F'</span>
+    name: <span class="hljs-built_in">string</span> 
+    level: <span class="hljs-built_in">Number</span> <span class="hljs-comment">// liczba całkowita</span>
+    children?: Node[], <span class="hljs-comment">// parametry wykonania funkcji, ma długość równą arności funkcji</span>
+}
+<span class="hljs-keyword">type</span> Node = TNode | FNode
+</code></pre>
+<p>Jeżeli pokolenie jest pierwsze to wszystkie osobniki były stworzone losowo ze wszystkich dostępnych funkcji i wartości. Pokolenie jest zawsze posortowane po wartości &quot;fitnessu&quot;.</p>
+<p>Jeżeli pokolenie nie jest pierwsze to jest genereowane poprzez mutację i krzyżowanie osobników z poprzedniego pokolenia. Wybór operatora (mutacja lub krzyżowanie) następuje losowo z prawdopodobieństwem <code>Prawdopodobieńswto krzyżowania</code>. Mutacja tworzy jedno &quot;dziecko&quot;, krzyżowanie 2</p>
+<p>&quot;Rodzice&quot; są wybierani na podstawie turnieju. <code>Wielkość turnieju</code> osobników jest wybieranych losowo i wygrywa (czyli zostaje rodzicem) najlepszy z nich.</p>
+<p>Mutacja to zastąpienie losowego węzła (funkcji lub wartości) nowym losowo wygenerowanym węzłem.</p>
+<p>Krzyżowanie to wymiana losowych węzłów pomiędzy rodzicami</p>

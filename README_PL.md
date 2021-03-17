@@ -70,7 +70,7 @@ Użytkownik ma także dostęp do 4. guzików:
 ### Przykładowy osobnik:
 ![Equation Tree](/assets/eq_as_tree.png)
 
-Algorytm generuje osobniiki, które możnaby otypować następująco:
+Algorytm generuje osobniki, które możnaby otypować następująco:
 ```javascript
 interface TNode { // wierzchołek będący liściem
     type: 'T'

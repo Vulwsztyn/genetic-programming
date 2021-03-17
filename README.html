@@ -1,0 +1,65 @@
+<h1 id="genetic-programming">Genetic Programming</h1>
+<h2 id="intro">Intro</h2>
+<p>The goal of this project was to create a website that enables the user to generate a mathematical function best approximating values for given points. The website is hosted at <a href="https://vulwsztyn.github.io/genetic-programming/">https://vulwsztyn.github.io/genetic-programming/</a>.</p>
+<h2 id="regular-human-readable-explanation-of-what-s-going-on">Regular human readable explanation of what&#39;s going on</h2>
+<h3 id="assumptions">Assumptions</h3>
+<p>Let&#39;s assume that you are assigned a task that this program solves and are given a set of points and are to create a function that best approximates them. Let&#39;s also assume that you know nothing about linear regression, Newton&#39;s method, and such, but you are extremely fast at generating random functions and how close their value is to the given points (because computers are).</p>
+<h3 id="how-is-the-random-function-generated-by-example-">How is the &quot;random&quot; function generated (by example)</h3>
+<p>You are given a set of functions <code>sin, cos, multiply, add, log</code> and values <code>x0, 1, 0, 2, range(-10,10)</code> (where range means that you can choose any value from the range).</p>
+<p>To choose a function or value you could use a manual random number generator i.e. a die.</p>
+<p>In the following example I will omit all &quot;Let&#39;s assume&quot;s.</p>
+<p>The process starts with choosing a function <code>sin</code>. <code>sin</code> is a unary function (has only one parameter), so now you need to choose a random function or value again. So our random function now looks like this <code>sin(_)</code> (<code>_</code> are to be filled in later steps).</p>
+<p>You choose multiplication to fill the gap. Multiplication has 2 parameters, so now the function is: <code>sin(_*_)</code> and you need to choose 2 functions or values to fill the gaps. </p>
+<p>You choose <code>range(-10,10)</code> and <code>log</code>. I deliberately chose range to show how it works. You generate (e.g. with python) one random number from the range (real if the domain is real, int if it is int). You generated -6. So our function looks like this <code>sin(-6*log(_,_))</code>.</p>
+<p>There is a restriction on number of &quot;levels&quot; the function can have, so if it were <code>3</code> you would need to choose a value not a value or function to fill the gaps. Let&#39;s once again assume so.</p>
+<p>You choose <code>2</code> and <code>x0</code> to fill the gaps. So the final function you generated is <code>sin(-6*log(2,x0))</code>.</p>
+<p>It may or may not be the greatest approximation of the given points, but fret not, as you are extremely fast at function generation you create <code>24999</code> more functions. Some of them approximate the points better some worse. Congratulations you have just created a generation of functions (specimen).</p>
+<h3 id="how-are-the-following-generations-created-">How are the following generations created?</h3>
+<p>The next generations are not created as randomly as the first. They are created by mutation or cross-over between the current population.</p>
+<p>Mutation works in the following way: you choose one specimen e.g. <code>sin(-6*log(2,x0))</code> and choose which part of it to mutate i.e. replace. You choose <code>log</code>, so you remove <code>log</code> with its parameters and replace it with the <code>_</code>: <code>sin(-6*_)</code> and you act as if you were just creating the function again choosing functions or values to fill the gaps. You could create <code>sin(-6*(x0+4))</code> or <code>sin(-6*x0)</code> or <code>sin(-6*cos(2))</code> (yes, it is constant), etc.</p>
+<p>Cross-over is performed by choosing 2 specimen and switching parts of them. You chose <code>log(x0,(4*x0))+sin(cos(2))</code> and <code>2*log(4,log(2,x0))</code>. From the first you choose <code>(4*x0)</code> from the second <code>2</code>. Crossover generates the following &quot;children&quot;: <code>log(x0,2)+sin(cos(2))</code> and <code>(4*x0)*log(4,log(2,x0))</code>.</p>
+<p>The creation of &quot;children&quot; by mutation or cross-over is performed until their number is equal to the number of specimen in the previous generation, then the &quot;children&quot; become a new generation and the process begins anew until the limit of generations is reached.</p>
+<h3 id="how-are-specimen-evaluated-">How are specimen evaluated?</h3>
+<p>The specimen function is passed the points in order to calculate their value. Please notice that the last value of point is never treated as input. e.g for point <code>2, 4</code> <code>x0 = 2</code> and <code>y = 4</code> and y is never a functions parameters, likewise <code>0, 1, 1, 1</code> means that <code>x0 = 0, x1 = 1, x2 = 1, y = 1</code>. </p>
+<p>Then the difference between the functions output and the user-given value (<code>y</code>) is calculated. Error is then squared. Sum of squared errors for each point is the fitness of specimen. The lesser the fitness the better the approximation.</p>
+<h2 id="ui">UI</h2>
+<p>The user is presented with a number of input fields to tweak the parameters of the genetic programming algorithm.</p>
+<ul>
+<li><code>Problem type</code> - defines whether the problem should generate a function meant for real numbers, integers, or booleans. Influences the set of possible functions.</li>
+<li><code>Population size</code> - defines how many specimens should a generation contain</li>
+<li><code>Max tree depth</code> - defines maximal depth of the equation tree generated by the algorithm</li>
+<li><code>Tournament Size</code> - defines how many specimens enter the tournament. The best wins/</li>
+<li><code>Crossover Probability</code> - probability of choosing crossover operation instead of mutation to creates next specimen(s).</li>
+<li><code>Points</code> -  points to be approximated</li>
+<li><code>Possible leaves</code> - defines the possible values in leaves of the equation tree, a line should contain either a value (e.g. <code>3.14</code>) or a range (e.g. <code>(-10,10)</code>), disabled for booleans. Automatically contains all variables (i.e. <code>x0, x1, x2, ...</code>).</li>
+<li><code>Possible functions</code> - defines a set of functions that can be used to create the equation tree</li>
+</ul>
+<p>The user is also presented with 4 buttons:</p>
+<ul>
+<li><code>Create first generation</code> - create a generation of <code>Population size</code> random specimen, disables most of input fields</li>
+<li><code>Create next generation</code> - create a generation of <code>Population size</code> specimen, if a generation is already created then as its offspring otherwise random</li>
+<li><code>Create n generations</code> - equivalent to clicking <code>Create next generation</code> <code>n</code> times - <code>n</code> is a value from the following input field</li>
+<li><code>Reset</code> - enables inputs and resets the population</li>
+</ul>
+<h2 id="logic">Logic</h2>
+<h3 id="example-specimen-">Example specimen:</h3>
+<p><img src="https://github.com/Vulwsztyn/genetic-programming/blob/master/assets/eq_as_tree.png?raw=true" alt="Equation Tree"></p>
+<p>Algorithm generates a population of specimen that can be typed so:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">interface</span> TNode { <span class="hljs-comment">// leaf node</span>
+    <span class="hljs-keyword">type</span>: <span class="hljs-string">'T'</span>
+    value: <span class="hljs-built_in">Number</span> | <span class="hljs-built_in">boolean</span> 
+    level: <span class="hljs-built_in">Number</span> <span class="hljs-comment">// integer</span>
+}
+<span class="hljs-keyword">interface</span> FNode { <span class="hljs-comment">// function node</span>
+    <span class="hljs-keyword">type</span>: <span class="hljs-string">'F'</span>
+    name: <span class="hljs-built_in">string</span> 
+    level: <span class="hljs-built_in">Number</span> <span class="hljs-comment">// integer</span>
+    children?: Node[], <span class="hljs-comment">// parameters of a function, length is equal to the arity of the function</span>
+}
+<span class="hljs-keyword">type</span> Node = TNode | FNode
+</code></pre>
+<p>If the generation is the first one the specimen are generated randomly (uniformly) from all possible values of the node, that is all user selected functions and leaf values. A generation is always sorted by fitness.</p>
+<p>If the generation is not the first one it is generated by mutation and crossing over of the specimen from previous generation. Whether next specimen(s) will be created by mutation or crossover is random (with probability of crossover equal to <code>Crossover Probability</code> parameter). Mutation generates one child from one &quot;parent&quot;, crossover generates two children from two &quot;parents&quot;.</p>
+<p>All parents are chosen by tournament i.e. since the generation is sorted by fitness a <code>Tournament Size</code> of indexes is randomly generated and the lowest is chosen.</p>
+<p>Mutation is the replacement of a random node in the specimen with a new randomly generated node.</p>
+<p>Crossover is the exchange of randomly chosen nodes (subtrees) from both parents.</p>
