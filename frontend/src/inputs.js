@@ -155,17 +155,11 @@ function Inputs({
       </Grid>
       <Grid container spacing={1}>
         {[
-          { name: 'populationSize', value: populationSize, stateField: 'populationSize' },
-          // { name: 'number-of-generations', value: numberOfGenerations, stateField: 'numberOfGenerations' },
-          { name: 'maxTreeDepth', value: maxTreeDepth, stateField: 'maxTreeDepth' },
-          { name: 'tournamentSize', value: tournamentSize, stateField: 'tournamentSize' },
-          // {
-          //   name: 'tournament-winning-probability',
-          //   value: tournamentWinningProbability,
-          //   stateField: 'tournamentWinningProbability',
-          // },
-          { name: 'crossoverProbability', value: crossoverProbability, stateField: 'crossoverProbability' },
-        ].map(({ name, value, stateField }) => (
+          { name: 'populationSize', value: populationSize, stateField: 'populationSize', disabled: algorithmState !== 'BEFORE_RUN' },
+          { name: 'maxTreeDepth', value: maxTreeDepth, stateField: 'maxTreeDepth', disabled: algorithmState !== 'BEFORE_RUN' },
+          { name: 'tournamentSize', value: tournamentSize, stateField: 'tournamentSize', disabled: false },
+          { name: 'crossoverProbability', value: crossoverProbability, stateField: 'crossoverProbability', disabled: false },
+        ].map(({ name, value, stateField, disabled }) => (
           <Grid item xs={12}>
             <TextField
               id={name}
@@ -178,7 +172,7 @@ function Inputs({
                 shrink: true,
               }}
               variant='outlined'
-              disabled={algorithmState !== 'BEFORE_RUN'}
+              disabled={disabled}
             />
           </Grid>
         ))}

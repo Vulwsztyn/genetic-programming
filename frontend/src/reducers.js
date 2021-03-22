@@ -22,10 +22,12 @@ const defaultState = {
   algorithmState: 'BEFORE_RUN',
 }
 
+const canBeChangedAfterAlgorithmRun = ['tournamentSize', 'crossoverProbability', 'leavesRaw', 'pointsRaw']
+
 export const mainReducer = function (state = defaultState, action) {
   switch (action.type) {
     case 'INPUT_CHANGE':
-      return state.algorithmState === 'RUNNING'
+      return state.algorithmState === 'RUNNING' && !canBeChangedAfterAlgorithmRun.includes(action.field)
         ? state
         : {
             ...state,
