@@ -1,6 +1,7 @@
 # Programowanie Genetyczne
 
 ## Intro
+
 Celem projektu było stworzenie strony umożliwiającej użytkownikowi generację matematycznych funkcji, które jak najlepiej odwzorowuje dane punkty. Strona ta istnieje pod adresem: https://vulwsztyn.github.io/genetic-programming/#/pl.
 
 ## Wyjaśnienie o co chodzi dla zwykłych śmiertelników
@@ -8,7 +9,6 @@ Celem projektu było stworzenie strony umożliwiającej użytkownikowi generacj�
 ### Założenia
 
 Załóżmy, że otrzymałeś zadanie wykonania tego, co robi ten program i otrzymałeś zbiór punktów, które masz jak najlepiej przybliżyć losową funkcją. Załóżmy także, że nie masz pojęcia o regresji liniowej, metodzie Newtona etc., ale za to bardzo szybko tworzysz i losowe funkcje i je ewaluujesz (bo komputery tak robią).
-
 
 ### Jak wygenerować losową funkcję (na podstawie przykładu)
 
@@ -26,9 +26,9 @@ Wybierasz `range(-10,10)` i `log`. `range` został wybrany celowo by pokazać, j
 
 Istnieje ograniczenie na liczbę "poziomów" funkcji, więc gdyby było to `3` to w następnym kroku musiałbyś wybrać wartość, ale nie funkcję. Załóżmy, że tak jest.
 
- Wybierasz `2` i `x0` by wypełnić luki. Ostatecznie funkcja przybiera postać: `sin(-6*log(2,x0))`.
+Wybierasz `2` i `x0` by wypełnić luki. Ostatecznie funkcja przybiera postać: `sin(-6*log(2,x0))`.
 
-Może ona lepiej lub gorzej przybliżać dane punkty, więc generujesz jeszcze 24999 kolejnych funkcji, tym samym tworząc pokolenie funkcji (osobników). 
+Może ona lepiej lub gorzej przybliżać dane punkty, więc generujesz jeszcze 24999 kolejnych funkcji, tym samym tworząc pokolenie funkcji (osobników).
 
 ### Jak są generowane kolejne pokolenia?
 
@@ -43,7 +43,7 @@ Tworzenie "dzieci" przy pomocy mutacji i krzyżowania następuje, aż nie zostan
 ### Jak oceniany jest osobnik?
 
 Funkcja osobnika otrzymuje jako parametry punkty podane przez użytkownika.
-Należy zauważyć, że ostatnia wartość danego punktu nigdy nie jest traktowana jako wartość wejściowa np. dla punktu`2, 4` `x0 = 2` i `y = 4`, a `y` nigdy nie jest parametrem funkcji-osobnika. Podobnie dla `0, 1, 1, 1` `x0 = 0, x1 = 1, x2 = 1, y = 1`. 
+Należy zauważyć, że ostatnia wartość danego punktu nigdy nie jest traktowana jako wartość wejściowa np. dla punktu`2, 4` `x0 = 2` i `y = 4`, a `y` nigdy nie jest parametrem funkcji-osobnika. Podobnie dla `0, 1, 1, 1` `x0 = 0, x1 = 1, x2 = 1, y = 1`.
 
 Następnie obliczana jest różnica między wartością zwróconą przez funkcję a podaną przez użytkownika (`y`). Różnica jest podnoszona do 2. potęgi. Suma błędów podniesionych do drugiej potęgi to "fitness" osobnika. Im niższy tym dany osobnik lepiej przybliża dane punkty.
 
@@ -55,31 +55,35 @@ Użytkownik może zdefiniować następujące parametry:
 - `Wielkość Populacji` - definiuje liczbę osobników w pokoleniu
 - `Maksymalna Głębokość Drzewa` - definiuje maksymalny poziom zagnieżdżenia funkcji
 - `Wielkość turnieju` - definiuje wielkość turnieju. Najlepszy wygrywa.
-- `Prawdopodobieńswto krzyżowania` - prawdopodobieństwo krzyżowania zamiast mutacji
-- `Punkty` -  zbiór punktów do przybliżenia
-- `Możliwe liście` - definiuje możliwe wartości w liściach drzewa funkcji. Jedna linia powinna zawierać wartość (e.g. `3.14`) lub zakres (e.g. `(-10,10)`).  Automatycznie zawarte są wszystkie zmienne ( `x0, x1, x2, ...`).
+- `Prawdopodobieństwo krzyżowania` - prawdopodobieństwo krzyżowania zamiast mutacji
+- `Punkty` - zbiór punktów do przybliżenia
+- `Możliwe liście` - definiuje możliwe wartości w liściach drzewa funkcji. Jedna linia powinna zawierać wartość (e.g. `3.14`) lub zakres (e.g. `(-10,10)`). Automatycznie zawarte są wszystkie zmienne ( `x0, x1, x2, ...`).
 - `Dostępne Funkcje` - zbiór funkcji, które mogą być użyte do utworzenia funkcji
 
 Użytkownik ma także dostęp do 4. guzików:
+
 - `Stwórz Pierwsze Pokolenie` - tworzy pierwsze pokolenie
 - `Stwórz Następne Pokolenie` - tworzy kolejne pokolenie
 - `Stwórz N Pokoleń` - jak wyżej, ale `n` razy
 - `Reset` - resetuje postęp algorytmu
 
 ## Logika
+
 ### Przykładowy osobnik:
+
 ![Equation Tree](/assets/eq_as_tree.png)
 
 Algorytm generuje osobniki, które możnaby otypować następująco:
+
 ```javascript
 interface TNode { // wierzchołek będący liściem
     type: 'T'
-    value: Number | boolean 
+    value: Number | boolean
     level: Number // liczba całkowita
 }
 interface FNode { // wierzchołek będący funkcją
     type: 'F'
-    name: string 
+    name: string
     level: Number // liczba całkowita
     children?: Node[], // parametry wykonania funkcji, ma długość równą arności funkcji
 }
@@ -88,7 +92,7 @@ type Node = TNode | FNode
 
 Jeżeli pokolenie jest pierwsze to wszystkie osobniki były stworzone losowo ze wszystkich dostępnych funkcji i wartości. Pokolenie jest zawsze posortowane po wartości "fitnessu".
 
-Jeżeli pokolenie nie jest pierwsze to jest genereowane poprzez mutację i krzyżowanie osobników z poprzedniego pokolenia. Wybór operatora (mutacja lub krzyżowanie) następuje losowo z prawdopodobieństwem `Prawdopodobieńswto krzyżowania`. Mutacja tworzy jedno "dziecko", krzyżowanie 2
+Jeżeli pokolenie nie jest pierwsze to jest genereowane poprzez mutację i krzyżowanie osobników z poprzedniego pokolenia. Wybór operatora (mutacja lub krzyżowanie) następuje losowo z prawdopodobieństwem `Prawdopodobieństwo krzyżowania`. Mutacja tworzy jedno "dziecko", krzyżowanie 2
 
 "Rodzice" są wybierani na podstawie turnieju. `Wielkość turnieju` osobników jest wybieranych losowo i wygrywa (czyli zostaje rodzicem) najlepszy z nich.
 

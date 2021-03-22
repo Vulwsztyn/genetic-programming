@@ -12,7 +12,7 @@ const defaultState = {
   desiredGeneration: 0,
   maxTreeDepth: 6,
   tournamentSize: 50,
-  crossoverProbability: 0.5,
+  crossoverProbability: 0.2,
   pointsRaw: points.map(({ x, y }) => `${x}, ${y}`).join('\n'),
   leavesRaw: ['1', '-1', '(-10,10)'].join('\n'),
   functions: {},

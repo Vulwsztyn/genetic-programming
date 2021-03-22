@@ -46,13 +46,13 @@ function Visuals({ generation, bestSpecimens, bestSpecimen, desiredGeneration, a
     <>
       <h1>
         {i18n.t('generation')}:
-        {generation > 0 ? ` ${generation} / ${generation <= desiredGeneration ? desiredGeneration : generation}` : ''}
-      </h1>
-      <h2>
-        {generation > 0 && algorithmState === 'BEFORE_RUN'
-          ? i18n.t("willBeRestarted")
+        {generation > 0
+          ? generation < desiredGeneration
+            ? ` ${generation} / ${generation <= desiredGeneration ? desiredGeneration : generation}`
+            : ` ${generation}`
           : ''}
-      </h2>
+      </h1>
+      <h2>{generation > 0 && algorithmState === 'BEFORE_RUN' ? i18n.t('willBeRestarted') : ''}</h2>
       {code || bestSpecimen?.code ? (
         <>
           <h2>Code:</h2>
