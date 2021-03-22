@@ -20,5 +20,7 @@
     "errorSquared": "Błąd^2",
     "showCode": "Pokaż kod",
     "globalBest": "Globalnie Najlepszy",
-    "title": "Programowanie Genetyczne"
+    "title": "Programowanie Genetyczne",
+    "restart": "Restart",
+    "willBeRestarted": "(algorytm zostanie ponownie uruchomiony przy tworzeniu kolejnego pokolenia)"
 }

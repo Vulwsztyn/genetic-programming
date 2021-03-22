@@ -65,24 +65,34 @@ function Inputs({
   // }
 
   const createGenerationZeroButtonFunction = () => {
+    setDesiredGeneration(1)
     algorithm.startAndCreateFirstGeneration()
   }
 
-  const createNextGenerationButtonFunction = useCallback(() => {
+  const createNextGenerationButtonFunctionHelper = useCallback(async () => {
     algorithmState !== 'BEFORE_RUN' ? algorithm.createNextGeneration() : algorithm.startAndCreateFirstGeneration()
   }, [algorithm, algorithmState])
 
+  const createNextGenerationButtonFunction = async () => {
+    setDesiredGeneration(Number(desiredGeneration) + 1)
+    createNextGenerationButtonFunctionHelper()
+  }
+
   const runButtonFunction = async () => {
-    setDesiredGeneration(Number(currentGeneration) + Number(numberOfgeneraionsToRun))
-    createNextGenerationButtonFunction()
+    setDesiredGeneration(Number(desiredGeneration) + Number(numberOfgeneraionsToRun))
+    createNextGenerationButtonFunctionHelper()
+  }
+  const resetButtonFunction = async () => {
+    resetAlgorithmState()
+    setDesiredGeneration(0)
   }
   useEffect(() => {
     setTimeout(() => {
       if (Number(currentGeneration) < Number(desiredGeneration)) {
-        createNextGenerationButtonFunction()
+        createNextGenerationButtonFunctionHelper()
       }
     }, 0)
-  }, [createNextGenerationButtonFunction, currentGeneration, desiredGeneration])
+  }, [createNextGenerationButtonFunctionHelper, currentGeneration, desiredGeneration])
   useEffect(() => {
     document.title = i18n.t('title')
   }, [])
@@ -132,8 +142,8 @@ function Inputs({
           />
         </Grid>
         <Grid item xs={12}>
-          <Button className={classes.button} variant='contained' color='primary' onClick={resetAlgorithmState}>
-            Reset
+          <Button className={classes.button} variant='contained' color='primary' onClick={resetButtonFunction}>
+            {i18n.t('restart')}
           </Button>
         </Grid>
         {/* <Button variant='contained' color='primary'>

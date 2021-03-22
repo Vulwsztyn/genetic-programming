@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   },
 })
 
-function Visuals({ generation, bestSpecimens, bestSpecimen }) {
+function Visuals({ generation, bestSpecimens, bestSpecimen, desiredGeneration, algorithmState }) {
   const { lang } = useParams()
   i18n.changeLanguage(lang)
   const classes = useStyles()
@@ -44,7 +44,15 @@ function Visuals({ generation, bestSpecimens, bestSpecimen }) {
   )
   return (
     <>
-      <h1>{i18n.t("generation")}: {generation}</h1>
+      <h1>
+        {i18n.t('generation')}:
+        {generation > 0 ? ` ${generation} / ${generation <= desiredGeneration ? desiredGeneration : generation}` : ''}
+      </h1>
+      <h2>
+        {generation > 0 && algorithmState === 'BEFORE_RUN'
+          ? i18n.t("willBeRestarted")
+          : ''}
+      </h2>
       {code || bestSpecimen?.code ? (
         <>
           <h2>Code:</h2>
@@ -78,11 +86,13 @@ function Visuals({ generation, bestSpecimens, bestSpecimen }) {
   )
 }
 const mapStateToProps = (state) => {
-  const { currentGeneration, bestSpecimens, bestSpecimen } = state
+  const { currentGeneration, bestSpecimens, bestSpecimen, desiredGeneration, algorithmState } = state
   return {
     generation: currentGeneration,
     bestSpecimens,
     bestSpecimen,
+    desiredGeneration,
+    algorithmState,
   }
 }
 

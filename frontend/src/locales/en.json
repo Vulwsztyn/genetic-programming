@@ -20,5 +20,7 @@
     "errorSquared": "Error Squared",
     "showCode": "Show Code",
     "globalBest": "Global Best",
-    "title": "Genetic Programming"
+    "title": "Genetic Programming",
+    "restart": "Restart",
+    "willBeRestarted": "(algorithm will be restarted with next generation creation)"
 }

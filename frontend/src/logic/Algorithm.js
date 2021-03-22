@@ -130,13 +130,26 @@ export default class Algorithm {
   }
 
   createGenerationZero() {
-    // console.log(this.inputs)
+    // console.log(this.functionsArray)
     const generation = [...Array(this.populationSize).keys()].map(() =>
       generateTree('', this.functionsArray, this.leavesFunctions, this.maxTreeDepth),
     )
     generation.forEach((a) => assignFitness(this.evaluate, this.points, a))
     generation.sort(this.sortingFunction)
     this.generation = generation
+    // console.log(generation[10000])
+    // const mySpecimen = {
+    //   type: 'F',
+    //   name: 'bitwiseOr',
+    //   children: [
+    //     { type: 'T', value: 'x0', level: 2, subNodesCount: 1 },
+    //     { type: 'T', value: 'x1', level: 2, subNodesCount: 1 },
+    //   ],
+    // }
+    // console.log('chój')
+    // console.log(this.evaluate(this.points, mySpecimen))
+    // assignFitness(this.evaluate, this.points, mySpecimen)
+    // console.log(mySpecimen)
   }
 
   // async asyncCrossover(i) {

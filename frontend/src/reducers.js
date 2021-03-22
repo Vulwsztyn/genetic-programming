@@ -8,12 +8,10 @@ const points = [...Array(20).keys()].map((a) => {
 
 const defaultState = {
   problemType: 'real',
-  populationSize: 25000,
+  populationSize: 5000,
   desiredGeneration: 0,
-  // numberOfGenerations: 2,
   maxTreeDepth: 6,
   tournamentSize: 50,
-  // tournamentWinningProbability: 0.5,
   crossoverProbability: 0.5,
   pointsRaw: points.map(({ x, y }) => `${x}, ${y}`).join('\n'),
   leavesRaw: ['1', '-1', '(-10,10)'].join('\n'),
