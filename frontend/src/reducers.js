@@ -20,9 +20,16 @@ const defaultState = {
   bestSpecimen: null,
   currentGeneration: '0',
   algorithmState: 'BEFORE_RUN',
+  nodePenalty: 0,
 }
 
-const canBeChangedAfterAlgorithmRun = ['tournamentSize', 'crossoverProbability', 'leavesRaw', 'pointsRaw']
+const canBeChangedAfterAlgorithmRun = [
+  'tournamentSize',
+  'crossoverProbability',
+  'leavesRaw',
+  'pointsRaw',
+  'nodePenalty',
+]
 
 export const mainReducer = function (state = defaultState, action) {
   switch (action.type) {

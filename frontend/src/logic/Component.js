@@ -19,6 +19,7 @@ function App({
   setCurrentGeneration,
   setBestSpecimens,
   setBestSpecimen,
+  nodePenalty,
 }) {
   algorithm.setProperty('populationSize', Number(populationSize))
   algorithm.setProperty('numberOfGenerations', Number(numberOfGenerations))
@@ -28,6 +29,7 @@ function App({
   algorithm.setProperty('crossoverProbability', Number(crossoverProbability))
   algorithm.setProperty('pointsRaw', pointsRaw)
   algorithm.setProperty('leavesRaw', leavesRaw)
+  algorithm.setProperty('nodePenalty', nodePenalty)
   if (Object.keys(functions).length !== 0) {
     algorithm.setUserSelectedFunctions(functions)
   } else {
@@ -55,6 +57,7 @@ const mapStateToProps = (state) => {
     pointsRaw,
     leavesRaw,
     functions,
+    nodePenalty,
   } = state
   return {
     problemType,
@@ -67,6 +70,7 @@ const mapStateToProps = (state) => {
     pointsRaw,
     leavesRaw,
     functions,
+    nodePenalty,
   }
 }
 

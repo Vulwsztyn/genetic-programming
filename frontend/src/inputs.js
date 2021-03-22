@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import Checkbox from '@material-ui/core/Checkbox'
 import Grid from '@material-ui/core/Grid'
+import Tooltip from '@material-ui/core/Tooltip'
 // import * as R from 'ramda'
 import i18n from './i18n'
 import { useParams } from 'react-router-dom'
@@ -48,6 +49,7 @@ function Inputs({
   currentGeneration,
   setDesiredGeneration,
   desiredGeneration,
+  nodePenalty,
 }) {
   const { lang } = useParams()
   i18n.changeLanguage(lang)
@@ -100,30 +102,35 @@ function Inputs({
     <form className={classes.root} noValidate autoComplete='off'>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Button
-            className={classes.button}
-            variant='contained'
-            color='primary'
-            onClick={createGenerationZeroButtonFunction}
-          >
-            {i18n.t('createFirstGeneration')}
-          </Button>
+          <Tooltip title={i18n.t('createFirstGeneration_tooltip')} arrow placement='right'>
+            <Button
+              className={classes.button}
+              variant='contained'
+              color='primary'
+              onClick={createGenerationZeroButtonFunction}
+            >
+              {i18n.t('createFirstGeneration')}
+            </Button>
+          </Tooltip>
         </Grid>
         <Grid item xs={12}>
-          <Button
-            className={classes.button}
-            variant='contained'
-            color='primary'
-            onClick={createNextGenerationButtonFunction}
-            // disabled={algorithmState === 'BEFORE_RUN'}
-          >
-            {i18n.t('createNextGeneration')}
-          </Button>
+          <Tooltip title={i18n.t('createNextGeneration_tooltip')} arrow placement='right'>
+            <Button
+              className={classes.button}
+              variant='contained'
+              color='primary'
+              onClick={createNextGenerationButtonFunction}
+            >
+              {i18n.t('createNextGeneration')}
+            </Button>
+          </Tooltip>
         </Grid>
         <Grid item xs={12}>
-          <Button className={classes.button} variant='contained' color='primary' onClick={runButtonFunction}>
-            {i18n.t('runNGenerations')}
-          </Button>
+          <Tooltip title={i18n.t('runNGenerations_tooltip')} arrow placement='right'>
+            <Button className={classes.button} variant='contained' color='primary' onClick={runButtonFunction}>
+              {i18n.t('runNGenerations', { number: numberOfgeneraionsToRun })}
+            </Button>
+          </Tooltip>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -142,38 +149,75 @@ function Inputs({
           />
         </Grid>
         <Grid item xs={12}>
-          <Button className={classes.button} variant='contained' color='primary' onClick={resetButtonFunction}>
-            {i18n.t('restart')}
-          </Button>
+          <Tooltip title={i18n.t('restart_tooltip')} arrow placement='right'>
+            <Button className={classes.button} variant='contained' color='primary' onClick={resetButtonFunction}>
+              {i18n.t('restart')}
+            </Button>
+          </Tooltip>
         </Grid>
-        {/* <Button variant='contained' color='primary'>
-          Primary
-        </Button>
-        <Button variant='contained' color='primary'>
-          Primary
-        </Button> */}
       </Grid>
       <Grid container spacing={1}>
         {[
-          { name: 'populationSize', value: populationSize, stateField: 'populationSize', disabled: algorithmState !== 'BEFORE_RUN' },
-          { name: 'maxTreeDepth', value: maxTreeDepth, stateField: 'maxTreeDepth', disabled: algorithmState !== 'BEFORE_RUN' },
-          { name: 'tournamentSize', value: tournamentSize, stateField: 'tournamentSize', disabled: false },
-          { name: 'crossoverProbability', value: crossoverProbability, stateField: 'crossoverProbability', disabled: false },
-        ].map(({ name, value, stateField, disabled }) => (
+          {
+            name: 'populationSize',
+            value: populationSize,
+            stateField: 'populationSize',
+            disabled: algorithmState !== 'BEFORE_RUN',
+            step: 1000,
+            min: 100,
+          },
+          {
+            name: 'maxTreeDepth',
+            value: maxTreeDepth,
+            stateField: 'maxTreeDepth',
+            disabled: algorithmState !== 'BEFORE_RUN',
+            step: 1,
+            min: 2,
+          },
+          {
+            name: 'tournamentSize',
+            value: tournamentSize,
+            stateField: 'tournamentSize',
+            disabled: false,
+            step: 10,
+            min: 1,
+          },
+          {
+            name: 'crossoverProbability',
+            value: crossoverProbability,
+            stateField: 'crossoverProbability',
+            disabled: false,
+            step: 0.1,
+            min: 0,
+            max: 1,
+          },
+          {
+            name: 'nodePenalty',
+            value: nodePenalty,
+            stateField: 'nodePenalty',
+            disabled: false,
+            step: 0.05,
+            min: 0,
+            max: 1,
+          },
+        ].map(({ name, value, stateField, disabled, step, min, max }) => (
           <Grid item xs={12}>
-            <TextField
-              id={name}
-              key={name}
-              label={i18n.t(name)}
-              type='number'
-              value={value}
-              onChange={(e) => setValue(stateField, Number(e.target.value))}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant='outlined'
-              disabled={disabled}
-            />
+            <Tooltip title={i18n.t(name + '_tooltip')} arrow placement='right'>
+              <TextField
+                id={name}
+                key={name}
+                label={i18n.t(name)}
+                type='number'
+                value={value}
+                onChange={(e) => setValue(stateField, Number(e.target.value))}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant='outlined'
+                disabled={disabled}
+                inputProps={{ step, min, max }}
+              />
+            </Tooltip>
           </Grid>
         ))}
         <Grid item xs={12}>
@@ -262,6 +306,7 @@ const mapStateToProps = (state) => {
     algorithmState,
     currentGeneration,
     desiredGeneration,
+    nodePenalty,
   } = state
   return {
     problemType,
@@ -277,6 +322,7 @@ const mapStateToProps = (state) => {
     algorithmState,
     currentGeneration,
     desiredGeneration,
+    nodePenalty,
   }
 }
 

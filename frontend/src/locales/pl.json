@@ -11,7 +11,7 @@
   "boolean": "Boolowski",
   "createFirstGeneration": "Stwórz pierwsze pokolenie",
   "createNextGeneration": "Stwórz następne pokolenie",
-  "runNGenerations": "Stwórz N pokoleń",
+  "runNGenerations": "Stwórz {{number}} pokoleń",
   "numberOfGenerationsToRun": "Liczba pokoleń do stworzenia",
   "generation": "Pokolenie",
   "code": "Kod",
@@ -22,5 +22,15 @@
   "globalBest": "Najlepsze w populacji",
   "title": "Programowanie genetyczne",
   "restart": "Restart",
-  "willBeRestarted": "(algorytm zostanie ponownie uruchomiony przy tworzeniu kolejnego pokolenia)"
+  "willBeRestarted": "(algorytm zostanie ponownie uruchomiony przy tworzeniu kolejnego pokolenia)",
+  "nodePenalty": "Kara za skomplikowanie",
+  "createFirstGeneration_tooltip": "Tworzy pokolenie losowych osobników, ustawia licznik pokoleń na 1",
+  "createNextGeneration_tooltip": "",
+  "runNGenerations_tooltip": "Tworzy kolejne pokolenia w liczbie określonej poniżej",
+  "restart_tooltip": "Następne stworzone pokolenie będzie losowo generowane, a licznik pokoleń zostanie ustawiony na 1",
+  "populationSize_tooltip": "Liczba osobników w pokoleniu",
+  "maxTreeDepth_tooltip": "",
+  "tournamentSize_tooltip": "",
+  "crossoverProbability_tooltip": "Prawdopodobieństwo, że osobnik(cy) zostanie stworzony przez krzyżowanie. Alternatywą jest mutacja.",
+  "nodePenalty_tooltip": "Wartość dodana do błędu kwadratowego osobnika za każdy węzeł (funkcję lub wartość) w jego funkcji przy sortowaniu."
 }

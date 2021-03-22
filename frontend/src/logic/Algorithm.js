@@ -26,15 +26,16 @@ export default class Algorithm {
     this.calculateUsableFuncitons()
     this.evaluate = specimenEvaluator(functions)
     this.currentGenerationNumber = 0
+    this.nodePenalty = 0
     console.log({ functions })
     this.sortingFunction = (a, b) =>
       isNaN(a.fitness)
         ? 1
         : isNaN(b.fitness)
         ? -1
-        : a.fitness > b.fitness
+        : a.fitness + a.subNodesCount * this.nodePenalty > b.fitness + b.subNodesCount * this.nodePenalty
         ? 1
-        : b.fitness > a.fitness
+        : b.fitness + b.subNodesCount * this.nodePenalty > a.fitness + a.subNodesCount * this.nodePenalty
         ? -1
         : a.subNodesCount > b.subNodesCount
         ? 1
@@ -84,13 +85,19 @@ export default class Algorithm {
     if (name === 'problemType') {
       this.calculateUsableFuncitons()
     }
+    if (name === 'nodePenalty' && this.generation){
+      this.generation.sort(this.sortingFunction)
+      this.setBestSpecimensRedux()
+      this.bestSpecimen = structuredClone(this.generation[0])
+      this.reduxSetters.setBestSpecimen(mapSpecimenToStorable(this.bestSpecimen, this.functions, this.inputVariables))
+    }
   }
 
   parsePoints() {
     const parseSinglePoint = {
       real: (e) => Number(e),
       integer: (e) => Math.round(Number(e)),
-      boolean: (e) => ['true', '1'].includes(e.trim().toLowerCase())
+      boolean: (e) => ['true', '1'].includes(e.trim().toLowerCase()),
     }[this.problemType]
     this.points = this.pointsRaw.split('\n').map((line) => {
       const vars = line.split(',').map((e) => parseSinglePoint(e))
@@ -206,6 +213,7 @@ export default class Algorithm {
   }
 
   async createNextGeneration() {
+    console.log(this.nodePenalty)
     this.parsePoints()
     this.parseLeaves()
     this.currentGenerationNumber++
