@@ -32,5 +32,5 @@
   "maxTreeDepth_tooltip": "",
   "tournamentSize_tooltip": "",
   "crossoverProbability_tooltip": "Probability of creating the next specimen(s) by crossover. Otherwise they are created by mutation.",
-  "nodePenalty_tooltip": "Value added to fitness for every node (function or value) in equation tree of a function for sorting"
+  "nodePenalty_tooltip": "Value added to fitness for every node (function or value) in equation tree of a function for sorting. Changing it will set 'Global best' to the best specimen from current generation if a generation exists."
 }

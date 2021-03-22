@@ -32,5 +32,5 @@
   "maxTreeDepth_tooltip": "",
   "tournamentSize_tooltip": "",
   "crossoverProbability_tooltip": "Prawdopodobieństwo, że osobnik(cy) zostanie stworzony przez krzyżowanie. Alternatywą jest mutacja.",
-  "nodePenalty_tooltip": "Wartość dodana do błędu kwadratowego osobnika za każdy węzeł (funkcję lub wartość) w jego funkcji przy sortowaniu."
+  "nodePenalty_tooltip": "Wartość dodana do błędu kwadratowego osobnika za każdy węzeł (funkcję lub wartość) w jego funkcji przy sortowaniu. Zmiana, gdy istnieje wygenerowane pokolenie ustawi 'Najlepszy w populacji' na najlepszego osobnika z aktualnego pokolenia."
 }

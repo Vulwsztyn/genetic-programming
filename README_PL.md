@@ -56,7 +56,7 @@ Użytkownik może zdefiniować następujące parametry:
 - `Maksymalna Głębokość Drzewa` - definiuje maksymalny poziom zagnieżdżenia funkcji
 - `Wielkość turnieju` - definiuje wielkość turnieju. Najlepszy wygrywa.
 - `Prawdopodobieństwo krzyżowania` - prawdopodobieństwo krzyżowania zamiast mutacji
-- `Kara za skomplikowanie` - wartość dodana do błędu kwadratowego osobnika za każdy węzeł (funkcję lub wartość) w jego funkcji przy sortowaniu.
+- `Kara za skomplikowanie` - wartość dodana do błędu kwadratowego osobnika za każdy węzeł (funkcję lub wartość) w jego funkcji przy sortowaniu. Zmiana, gdy istnieje wygenerowane pokolenie ustawi "Najlepszy w populacji" na najlepszego osobnika z aktualnego pokolenia.
 - `Punkty` - zbiór punktów do przybliżenia
 - `Możliwe liście` - definiuje możliwe wartości w liściach drzewa funkcji. Jedna linia powinna zawierać wartość (e.g. `3.14`) lub zakres (e.g. `(-10,10)`). Automatycznie zawarte są wszystkie zmienne ( `x0, x1, x2, ...`).
 - `Dostępne Funkcje` - zbiór funkcji, które mogą być użyte do utworzenia funkcji
